@@ -26,12 +26,6 @@ variable "workspace" {
   description = "The name of the AVD Workspace."
 }
 
-variable "application_group_id" {
-  type        = string
-  default     = null
-  description = "The ID of the AVD Application Group to associate with the AVD Workspace."
-}
-
 variable "subresource_names" {
   description = "The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'."
   type        = list(string)

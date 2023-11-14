@@ -5,6 +5,7 @@ resource "azurerm_virtual_desktop_workspace" "workspace" {
   resource_group_name = var.resource_group_name
   friendly_name       = var.workspace
   description         = "AVD Workspace"
+  tags                = var.tags
 }
 
 # Create Diagnostic Settings for AVD workspace
