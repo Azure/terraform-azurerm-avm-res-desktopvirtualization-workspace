@@ -62,14 +62,6 @@ Type: `string`
 
 The following input variables are optional (have default values):
 
-### <a name="input_application_group_id"></a> [application\_group\_id](#input\_application\_group\_id)
-
-Description: The ID of the AVD Application Group to associate with the AVD Workspace.
-
-Type: `string`
-
-Default: `null`
-
 ### <a name="input_diagnostic_settings"></a> [diagnostic\_settings](#input\_diagnostic\_settings)
 
 Description: A map of diagnostic settings to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
