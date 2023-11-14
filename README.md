@@ -239,7 +239,7 @@ The following outputs are exported:
 
 ### <a name="output_workspace_id"></a> [workspace\_id](#output\_workspace\_id)
 
-Description: n/a
+Description: The ID of the Workspace resource.
 
 ## Modules
 
