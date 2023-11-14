@@ -28,7 +28,7 @@ variable "workspace" {
 
 variable "application_group_id" {
   type        = string
-  default = null
+  default     = null
   description = "The ID of the AVD Application Group to associate with the AVD Workspace."
 }
 
