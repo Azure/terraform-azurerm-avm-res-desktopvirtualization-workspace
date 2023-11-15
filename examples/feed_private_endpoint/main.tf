@@ -65,16 +65,17 @@ module "workspace" {
   location            = var.location
   workspace           = var.workspace
   subresource_names   = ["feed"]
-  diagnostic_settings = {
-    to_law = {
-      name                  = "to-law"
-      workspace_resource_id = azurerm_log_analytics_workspace.this.id
-    }
-  }
   private_endpoints = {
     primary = {
       private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
       subnet_resource_id            = azurerm_subnet.this.id
+    }
+  }
+  diagnostic_settings = {
+    // This is the default diagnostic setting
+    default = {
+      name                  = "default"
+      workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
 }

@@ -11,7 +11,7 @@ DESCRIPTION
 variable "workspace" {
   type        = string
   description = "The name of the AVD Host Pool."
-  default     = "workspace-2"
+  default     = "workspace2"
 
   validation {
     condition     = can(regex("^[a-z0-9-]{3,24}$", var.workspace))
@@ -27,7 +27,7 @@ variable "subresource_names" {
 
 variable "appgroupname" {
   description = "The name of the application group"
-  default     = "appgroup-2"
+  default     = "appgroup2"
   type        = string
 }
 
