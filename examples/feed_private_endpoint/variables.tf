@@ -33,7 +33,7 @@ variable "appgroupname" {
 
 variable "host_pool" {
   type        = string
-  default     = "avdhostpool"
+  default     = "avdhostpool2"
   description = "The name of the AVD Host Pool to assign the application group to."
 }
 

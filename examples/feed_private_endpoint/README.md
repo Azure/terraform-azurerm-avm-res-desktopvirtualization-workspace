@@ -151,7 +151,7 @@ Description: The name of the AVD Host Pool to assign the application group to.
 
 Type: `string`
 
-Default: `"avdhostpool"`
+Default: `"avdhostpool2"`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
