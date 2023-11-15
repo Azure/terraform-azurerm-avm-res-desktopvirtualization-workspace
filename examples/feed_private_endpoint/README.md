@@ -71,16 +71,17 @@ module "workspace" {
   location            = var.location
   workspace           = var.workspace
   subresource_names   = ["feed"]
-  diagnostic_settings = {
-    to_law = {
-      name                  = "to-law"
-      workspace_resource_id = azurerm_log_analytics_workspace.this.id
-    }
-  }
   private_endpoints = {
     primary = {
       private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
       subnet_resource_id            = azurerm_subnet.this.id
+    }
+  }
+  diagnostic_settings = {
+    // This is the default diagnostic setting
+    default = {
+      name                  = "default"
+      workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
 }
@@ -133,7 +134,7 @@ Description: The name of the application group
 
 Type: `string`
 
-Default: `"appgroup-2"`
+Default: `"appgroup2"`
 
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
@@ -183,7 +184,7 @@ Description: The name of the AVD Host Pool.
 
 Type: `string`
 
-Default: `"workspace-2"`
+Default: `"workspace2"`
 
 ## Outputs
 
