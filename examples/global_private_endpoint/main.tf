@@ -18,16 +18,10 @@ module "naming" {
   version = "0.3.0"
 }
 
-# This picks a random region from the list of regions.
-resource "random_integer" "region_index" {
-  min = 0
-  max = length(local.azure_regions) - 1
-}
-
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
-  location = local.azure_regions[random_integer.region_index.result]
+  location = var.location
 }
 
 resource "azurerm_log_analytics_workspace" "this" {
@@ -36,17 +30,24 @@ resource "azurerm_log_analytics_workspace" "this" {
   location            = azurerm_resource_group.this.location
 }
 
-data "azurerm_virtual_desktop_host_pool" "this" {
-  name                = var.host_pool
-  resource_group_name = var.resource_group_name
+# A vnet is required for the private endpoint.
+resource "azurerm_virtual_network" "this" {
+  name                = module.naming.virtual_network.name_unique
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  address_space       = ["192.168.0.0/24"]
 }
 
-resource "azurerm_virtual_desktop_application_group" "this" {
-  name                = var.appgroupname
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  host_pool_id        = data.azurerm_virtual_desktop_host_pool.this.id
-  type                = "Desktop"
+resource "azurerm_subnet" "this" {
+  name                 = module.naming.subnet.name_unique
+  resource_group_name  = azurerm_resource_group.this.name
+  virtual_network_name = azurerm_virtual_network.this.name
+  address_prefixes     = ["192.168.0.0/24"]
+}
+
+resource "azurerm_private_dns_zone" "this" {
+  name                = "privatelink-global.wvd.microsoft.com"
+  resource_group_name = azurerm_resource_group.this.name
 }
 
 # This is the module call
@@ -56,16 +57,18 @@ module "workspace" {
   resource_group_name = var.resource_group_name
   location            = var.location
   workspace           = var.workspace
-  subresource_names   = []
+  subresource_names   = ["global"]
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
+  private_endpoints = {
+    primary = {
+      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
+      subnet_resource_id            = azurerm_subnet.this.id
+    }
+  }
 }
 
-resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
-  workspace_id         = module.workspace.workspace_id
-  application_group_id = azurerm_virtual_desktop_application_group.this.id
-}

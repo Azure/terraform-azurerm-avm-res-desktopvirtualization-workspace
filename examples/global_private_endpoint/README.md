@@ -24,16 +24,10 @@ module "naming" {
   version = "0.3.0"
 }
 
-# This picks a random region from the list of regions.
-resource "random_integer" "region_index" {
-  min = 0
-  max = length(local.azure_regions) - 1
-}
-
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
-  location = local.azure_regions[random_integer.region_index.result]
+  location = var.location
 }
 
 resource "azurerm_log_analytics_workspace" "this" {
@@ -42,17 +36,24 @@ resource "azurerm_log_analytics_workspace" "this" {
   location            = azurerm_resource_group.this.location
 }
 
-data "azurerm_virtual_desktop_host_pool" "this" {
-  name                = var.host_pool
-  resource_group_name = var.resource_group_name
+# A vnet is required for the private endpoint.
+resource "azurerm_virtual_network" "this" {
+  name                = module.naming.virtual_network.name_unique
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  address_space       = ["192.168.0.0/24"]
 }
 
-resource "azurerm_virtual_desktop_application_group" "this" {
-  name                = var.appgroupname
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  host_pool_id        = data.azurerm_virtual_desktop_host_pool.this.id
-  type                = "Desktop"
+resource "azurerm_subnet" "this" {
+  name                 = module.naming.subnet.name_unique
+  resource_group_name  = azurerm_resource_group.this.name
+  virtual_network_name = azurerm_virtual_network.this.name
+  address_prefixes     = ["192.168.0.0/24"]
+}
+
+resource "azurerm_private_dns_zone" "this" {
+  name                = "privatelink-global.wvd.microsoft.com"
+  resource_group_name = azurerm_resource_group.this.name
 }
 
 # This is the module call
@@ -62,19 +63,21 @@ module "workspace" {
   resource_group_name = var.resource_group_name
   location            = var.location
   workspace           = var.workspace
-  subresource_names   = []
+  subresource_names   = ["global"]
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
+  private_endpoints = {
+    primary = {
+      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
+      subnet_resource_id            = azurerm_subnet.this.id
+    }
+  }
 }
 
-resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
-  workspace_id         = module.workspace.workspace_id
-  application_group_id = azurerm_virtual_desktop_application_group.this.id
-}
 ```
 
 <!-- markdownlint-disable MD033 -->
@@ -92,18 +95,15 @@ The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
 
-- <a name="provider_random"></a> [random](#provider\_random)
-
 ## Resources
 
 The following resources are used by this module:
 
 - [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) (resource)
+- [azurerm_private_dns_zone.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) (resource)
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_virtual_desktop_application_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_application_group) (resource)
-- [azurerm_virtual_desktop_workspace_application_group_association.workappgrassoc](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_workspace_application_group_association) (resource)
-- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
-- [azurerm_virtual_desktop_host_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_desktop_host_pool) (data source)
+- [azurerm_subnet.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) (resource)
+- [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -114,14 +114,6 @@ No required inputs.
 
 The following input variables are optional (have default values):
 
-### <a name="input_appgroupname"></a> [appgroupname](#input\_appgroupname)
-
-Description: The name of the application group
-
-Type: `string`
-
-Default: `"appgroup-1"`
-
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
 Description: This variable controls whether or not telemetry is enabled for the module.  
@@ -131,14 +123,6 @@ If it is set to false, then no telemetry will be collected.
 Type: `bool`
 
 Default: `true`
-
-### <a name="input_host_pool"></a> [host\_pool](#input\_host\_pool)
-
-Description: The name of the AVD Host Pool to assign the application group to.
-
-Type: `string`
-
-Default: `"avdhostpool"`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
@@ -156,21 +140,13 @@ Type: `string`
 
 Default: `"rg-avm-test"`
 
-### <a name="input_subresource_names"></a> [subresource\_names](#input\_subresource\_names)
-
-Description: The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'.
-
-Type: `string`
-
-Default: `"feed"`
-
 ### <a name="input_workspace"></a> [workspace](#input\_workspace)
 
 Description: The name of the AVD Host Pool.
 
 Type: `string`
 
-Default: `"workspace-1"`
+Default: `"workspace-3"`
 
 ## Outputs
 
