@@ -19,10 +19,11 @@ variable "workspace" {
   }
 }
 
-variable "subresource_names" {
+variable "description" {
   type        = string
-  default     = "feed"
-  description = "The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'."
+  description = "The description of the AVD Workspace."
+  default     = "This is a feed workspace."
+
 }
 
 variable "appgroupname" {

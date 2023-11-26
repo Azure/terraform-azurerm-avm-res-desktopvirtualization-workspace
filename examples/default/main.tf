@@ -56,6 +56,7 @@ module "workspace" {
   resource_group_name = var.resource_group_name
   location            = var.location
   workspace           = var.workspace
+  description         = var.description
   subresource_names   = []
   diagnostic_settings = {
     to_law = {

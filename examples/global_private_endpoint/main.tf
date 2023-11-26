@@ -52,12 +52,14 @@ resource "azurerm_private_dns_zone" "this" {
 
 # This is the module call
 module "workspace" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  workspace           = var.workspace
-  subresource_names   = ["global"]
+  source                        = "../../"
+  enable_telemetry              = var.enable_telemetry
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  workspace                     = var.workspace
+  description                   = var.description
+  public_network_access_enabled = var.public_network_access_enabled
+  subresource_names             = ["global"]
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"

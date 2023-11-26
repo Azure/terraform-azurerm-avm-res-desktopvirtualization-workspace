@@ -19,6 +19,18 @@ variable "workspace" {
   }
 }
 
+variable "description" {
+  type        = string
+  description = "The description of the AVD Workspace."
+  default     = "This is a feed workspace."
+}
+
+variable "public_network_access_enabled" {
+  type        = bool
+  description = "Whether or not public network access is enabled for the AVD Host Pool."
+  default     = false
+}
+
 variable "subresource_names" {
   type        = string
   default     = "feed"

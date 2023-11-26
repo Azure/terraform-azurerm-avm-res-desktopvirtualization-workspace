@@ -26,6 +26,17 @@ variable "workspace" {
   description = "The name of the AVD Workspace."
 }
 
+variable "description" {
+  type        = string
+  description = "The description of the AVD Workspace."
+}
+
+variable "public_network_access_enabled" {
+  type        = bool
+  description = "Whether or not public network access is enabled for the AVD Workspace."
+  default     = false
+}
+
 variable "subresource_names" {
   description = "The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'."
   type        = list(string)

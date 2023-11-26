@@ -1,3 +1,3 @@
-# Default example
+# Feed Private Endpoint example
 
-This deploys the module in its simplest form.
+This deploys the module with the Feed download. One per workspace
