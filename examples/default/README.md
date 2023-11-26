@@ -62,6 +62,7 @@ module "workspace" {
   resource_group_name = var.resource_group_name
   location            = var.location
   workspace           = var.workspace
+  description         = var.description
   subresource_names   = []
   diagnostic_settings = {
     to_law = {
@@ -122,6 +123,14 @@ Type: `string`
 
 Default: `"appgroup-1"`
 
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: The description of the AVD Workspace.
+
+Type: `string`
+
+Default: `"This is a feed workspace."`
+
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
 Description: This variable controls whether or not telemetry is enabled for the module.  
@@ -155,14 +164,6 @@ Description: The resource group where the AVD Host Pool is deployed.
 Type: `string`
 
 Default: `"rg-avm-test"`
-
-### <a name="input_subresource_names"></a> [subresource\_names](#input\_subresource\_names)
-
-Description: The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'.
-
-Type: `string`
-
-Default: `"feed"`
 
 ### <a name="input_workspace"></a> [workspace](#input\_workspace)
 

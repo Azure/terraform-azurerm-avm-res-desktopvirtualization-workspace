@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# Default example
+# Feed Private Endpoint example
 
-This deploys the module in its simplest form.
+This deploys the module with the Feed download. One per workspace
 
 ```hcl
 terraform {
@@ -65,12 +65,14 @@ resource "azurerm_private_dns_zone" "this" {
 
 # This is the module call
 module "workspace" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  workspace           = var.workspace
-  subresource_names   = ["feed"]
+  source                        = "../../"
+  enable_telemetry              = var.enable_telemetry
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  workspace                     = var.workspace
+  description                   = var.description
+  public_network_access_enabled = var.public_network_access_enabled
+  subresource_names             = ["feed"]
   private_endpoints = {
     primary = {
       private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
@@ -136,6 +138,14 @@ Type: `string`
 
 Default: `"appgroup2"`
 
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: The description of the AVD Workspace.
+
+Type: `string`
+
+Default: `"This is a feed workspace."`
+
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
 Description: This variable controls whether or not telemetry is enabled for the module.  
@@ -161,6 +171,14 @@ Description: The location of the AVD Host Pool.
 Type: `string`
 
 Default: `"eastus"`
+
+### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
+
+Description: Whether or not public network access is enabled for the AVD Host Pool.
+
+Type: `bool`
+
+Default: `false`
 
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 

@@ -40,6 +40,12 @@ The following resources are used by this module:
 
 The following input variables are required:
 
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: The description of the AVD Workspace.
+
+Type: `string`
+
 ### <a name="input_location"></a> [location](#input\_location)
 
 Description: The Azure location where the resources will be deployed.
@@ -172,6 +178,14 @@ map(object({
 ```
 
 Default: `{}`
+
+### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
+
+Description: Whether or not public network access is enabled for the AVD Workspace.
+
+Type: `bool`
+
+Default: `false`
 
 ### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
 
