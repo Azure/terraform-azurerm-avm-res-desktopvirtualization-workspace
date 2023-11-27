@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# Default example
+# Global private endpoint example
 
-This deploys the module in its simplest form.
+This deploys the module with a initial feed discovery private endpoint. Only one for all your Azure Virtual Desktop deployment. Public access is disabled.
 
 ```hcl
 terraform {
@@ -58,12 +58,14 @@ resource "azurerm_private_dns_zone" "this" {
 
 # This is the module call
 module "workspace" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  workspace           = var.workspace
-  subresource_names   = ["global"]
+  source                        = "../../"
+  enable_telemetry              = var.enable_telemetry
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  name                          = var.name
+  description                   = var.description
+  public_network_access_enabled = var.public_network_access_enabled
+  subresource_names             = ["global"]
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
@@ -114,6 +116,14 @@ No required inputs.
 
 The following input variables are optional (have default values):
 
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: The description of the AVD Workspace.
+
+Type: `string`
+
+Default: `"AVD Workspace for all your Azure Virtual Desktop deployment."`
+
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
 Description: This variable controls whether or not telemetry is enabled for the module.  
@@ -126,27 +136,35 @@ Default: `true`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
-Description: The location of the AVD Host Pool.
+Description: The location of the AVD Workspace.
 
 Type: `string`
 
 Default: `"eastus"`
 
-### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
+### <a name="input_name"></a> [name](#input\_name)
 
-Description: The resource group where the AVD Host Pool is deployed.
-
-Type: `string`
-
-Default: `"rg-avm-test"`
-
-### <a name="input_workspace"></a> [workspace](#input\_workspace)
-
-Description: The name of the AVD Host Pool.
+Description: The name of the AVD Workspace.
 
 Type: `string`
 
 Default: `"workspace-3"`
+
+### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
+
+Description: Whether or not public network access is enabled for the AVD Workspace.
+
+Type: `bool`
+
+Default: `false`
+
+### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
+
+Description: The resource group where the AVD Workspace is deployed.
+
+Type: `string`
+
+Default: `"rg-avm-test"`
 
 ## Outputs
 

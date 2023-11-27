@@ -40,6 +40,12 @@ The following resources are used by this module:
 
 The following input variables are required:
 
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: The description of the AVD Workspace.
+
+Type: `string`
+
 ### <a name="input_location"></a> [location](#input\_location)
 
 Description: The Azure location where the resources will be deployed.
@@ -49,12 +55,6 @@ Type: `string`
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
 Description: The name of the resource group where the resources will be deployed.
-
-Type: `string`
-
-### <a name="input_workspace"></a> [workspace](#input\_workspace)
-
-Description: The name of the AVD Workspace.
 
 Type: `string`
 
@@ -117,6 +117,14 @@ object({
 
 Default: `{}`
 
+### <a name="input_name"></a> [name](#input\_name)
+
+Description: The name of the AVD Workspace.
+
+Type: `string`
+
+Default: `"workspace-3"`
+
 ### <a name="input_private_endpoints"></a> [private\_endpoints](#input\_private\_endpoints)
 
 Description: A map of private endpoints to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
@@ -172,6 +180,14 @@ map(object({
 ```
 
 Default: `{}`
+
+### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
+
+Description: Whether or not public network access is enabled for the AVD Workspace.
+
+Type: `bool`
+
+Default: `true`
 
 ### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
 

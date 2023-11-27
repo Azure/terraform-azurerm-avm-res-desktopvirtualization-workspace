@@ -21,9 +21,26 @@ variable "location" {
   description = "The Azure location where the resources will be deployed."
 }
 
-variable "workspace" {
+variable "name" {
   type        = string
   description = "The name of the AVD Workspace."
+  default     = "workspace-3"
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
+    error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
+  }
+}
+
+variable "description" {
+  type        = string
+  description = "The description of the AVD Workspace."
+}
+
+variable "public_network_access_enabled" {
+  type        = bool
+  description = "Whether or not public network access is enabled for the AVD Workspace."
+  default     = true
 }
 
 variable "subresource_names" {
