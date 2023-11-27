@@ -11,9 +11,7 @@ DESCRIPTION
 # Define variables for the AVD Host Pool deployment
 variable "resource_group_name" {
   type        = string
-  description = <<DESCRIPTION
-The name of the resource group where the resources will be deployed.
-DESCRIPTION 
+  description = "The name of the resource group where the resources will be deployed."
 }
 
 variable "location" {
