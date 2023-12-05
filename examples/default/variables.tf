@@ -8,26 +8,32 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-variable "workspace" {
+variable "name" {
   type        = string
   description = "The name of the AVD Host Pool."
   default     = "workspace-1"
 
   validation {
-    condition     = can(regex("^[a-z0-9-]{3,24}$", var.workspace))
+    condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
     error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
   }
 }
 
-variable "subresource_names" {
+variable "description" {
   type        = string
-  default     = "feed"
-  description = "The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'."
+  description = "The description of the AVD Workspace."
+  default     = "This is a AVD workspace."
 }
 
 variable "appgroupname" {
   description = "The name of the application group"
   default     = "appgroup-1"
+  type        = string
+}
+
+variable "type" {
+  description = "The type of the application group"
+  default     = "Desktop"
   type        = string
 }
 
@@ -47,5 +53,4 @@ variable "location" {
   type        = string
   default     = "eastus"
   description = "The location of the AVD Host Pool."
-
 }

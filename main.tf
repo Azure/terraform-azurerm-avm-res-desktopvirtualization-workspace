@@ -1,17 +1,18 @@
 # Create AVD workspace
 resource "azurerm_virtual_desktop_workspace" "workspace" {
-  name                = var.workspace
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  friendly_name       = var.workspace
-  description         = "AVD Workspace"
-  tags                = var.tags
+  name                          = var.name
+  location                      = var.location
+  resource_group_name           = var.resource_group_name
+  friendly_name                 = var.name
+  description                   = var.description
+  public_network_access_enabled = var.public_network_access_enabled
+  tags                          = var.tags
 }
 
 # Create Diagnostic Settings for AVD workspace
 resource "azurerm_monitor_diagnostic_setting" "this" {
   for_each                       = var.diagnostic_settings
-  name                           = each.value.name != null ? each.value.name : "diag-${var.workspace}"
+  name                           = each.value.name != null ? each.value.name : "diag-${var.name}"
   target_resource_id             = azurerm_virtual_desktop_workspace.workspace.id
   storage_account_id             = each.value.storage_account_resource_id
   eventhub_authorization_rule_id = each.value.event_hub_authorization_rule_resource_id
@@ -49,7 +50,7 @@ resource "azurerm_role_assignment" "this" {
 
 resource "azurerm_management_lock" "this" {
   count      = var.lock.kind != "None" ? 1 : 0
-  name       = coalesce(var.lock.name, "lock-${var.workspace}")
+  name       = coalesce(var.lock.name, "lock-${var.name}")
   scope      = azurerm_virtual_desktop_workspace.workspace.id
   lock_level = var.lock.kind
 }

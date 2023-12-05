@@ -46,7 +46,7 @@ resource "azurerm_virtual_desktop_application_group" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
   host_pool_id        = data.azurerm_virtual_desktop_host_pool.this.id
-  type                = "Desktop"
+  type                = var.type
 }
 
 # This is the module call
@@ -55,8 +55,8 @@ module "workspace" {
   enable_telemetry    = var.enable_telemetry
   resource_group_name = var.resource_group_name
   location            = var.location
-  workspace           = var.workspace
-  subresource_names   = []
+  name                = var.name
+  description         = var.description
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"

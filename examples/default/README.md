@@ -52,7 +52,7 @@ resource "azurerm_virtual_desktop_application_group" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
   host_pool_id        = data.azurerm_virtual_desktop_host_pool.this.id
-  type                = "Desktop"
+  type                = var.type
 }
 
 # This is the module call
@@ -61,8 +61,8 @@ module "workspace" {
   enable_telemetry    = var.enable_telemetry
   resource_group_name = var.resource_group_name
   location            = var.location
-  workspace           = var.workspace
-  subresource_names   = []
+  name                = var.name
+  description         = var.description
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
@@ -122,6 +122,14 @@ Type: `string`
 
 Default: `"appgroup-1"`
 
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: The description of the AVD Workspace.
+
+Type: `string`
+
+Default: `"This is a AVD workspace."`
+
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
 Description: This variable controls whether or not telemetry is enabled for the module.  
@@ -148,6 +156,14 @@ Type: `string`
 
 Default: `"eastus"`
 
+### <a name="input_name"></a> [name](#input\_name)
+
+Description: The name of the AVD Host Pool.
+
+Type: `string`
+
+Default: `"workspace-1"`
+
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
 Description: The resource group where the AVD Host Pool is deployed.
@@ -156,21 +172,13 @@ Type: `string`
 
 Default: `"rg-avm-test"`
 
-### <a name="input_subresource_names"></a> [subresource\_names](#input\_subresource\_names)
+### <a name="input_type"></a> [type](#input\_type)
 
-Description: The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'.
-
-Type: `string`
-
-Default: `"feed"`
-
-### <a name="input_workspace"></a> [workspace](#input\_workspace)
-
-Description: The name of the AVD Host Pool.
+Description: The type of the application group
 
 Type: `string`
 
-Default: `"workspace-1"`
+Default: `"Desktop"`
 
 ## Outputs
 

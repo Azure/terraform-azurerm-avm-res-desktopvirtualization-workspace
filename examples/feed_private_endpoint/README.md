@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# Default example
+# Feed private endpoint example
 
-This deploys the module in its simplest form.
+This deploys the module with the feed private endpoint and public access disabled. One per workspace.
 
 ```hcl
 terraform {
@@ -65,12 +65,14 @@ resource "azurerm_private_dns_zone" "this" {
 
 # This is the module call
 module "workspace" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  workspace           = var.workspace
-  subresource_names   = ["feed"]
+  source                        = "../../"
+  enable_telemetry              = var.enable_telemetry
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  name                          = var.name
+  description                   = var.description
+  public_network_access_enabled = var.public_network_access_enabled
+  subresource_names             = ["feed"]
   private_endpoints = {
     primary = {
       private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
@@ -136,6 +138,14 @@ Type: `string`
 
 Default: `"appgroup2"`
 
+### <a name="input_description"></a> [description](#input\_description)
+
+Description: The description of the AVD Workspace.
+
+Type: `string`
+
+Default: `"AVD Workspace with private endpoint"`
+
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
 Description: This variable controls whether or not telemetry is enabled for the module.  
@@ -162,6 +172,22 @@ Type: `string`
 
 Default: `"eastus"`
 
+### <a name="input_name"></a> [name](#input\_name)
+
+Description: The name of the AVD Workspace.
+
+Type: `string`
+
+Default: `"workspace2"`
+
+### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
+
+Description: Whether or not public network access is enabled for the AVD Workspace.
+
+Type: `bool`
+
+Default: `false`
+
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
 Description: The resource group where the AVD Host Pool is deployed.
@@ -177,14 +203,6 @@ Description: The names of the subresources to assosciatied with the private endp
 Type: `string`
 
 Default: `"feed"`
-
-### <a name="input_workspace"></a> [workspace](#input\_workspace)
-
-Description: The name of the AVD Host Pool.
-
-Type: `string`
-
-Default: `"workspace2"`
 
 ## Outputs
 
