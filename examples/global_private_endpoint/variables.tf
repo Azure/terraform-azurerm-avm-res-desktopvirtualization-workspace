@@ -11,7 +11,7 @@ DESCRIPTION
 variable "name" {
   type        = string
   description = "The name of the AVD Workspace."
-  default     = "workspace-3"
+  default     = "private-globalworkspace-empty"
 
   validation {
     condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
