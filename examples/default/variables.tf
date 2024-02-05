@@ -10,7 +10,7 @@ DESCRIPTION
 
 variable "name" {
   type        = string
-  description = "The name of the AVD Host Pool."
+  description = "The name of the AVD Workspace."
   default     = "workspace-1"
 
   validation {
