@@ -36,9 +36,12 @@ resource "azurerm_log_analytics_workspace" "this" {
   location            = azurerm_resource_group.this.location
 }
 
-data "azurerm_virtual_desktop_host_pool" "this" {
+resource "azurerm_virtual_desktop_host_pool" "this" {
   name                = var.host_pool
   resource_group_name = var.resource_group_name
+  location            = var.location
+  load_balancer_type  = var.type
+  type                = "Pooled"
 }
 
 resource "azurerm_virtual_desktop_application_group" "this" {
