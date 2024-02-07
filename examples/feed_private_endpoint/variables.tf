@@ -42,6 +42,7 @@ variable "appgroupname" {
   type        = string
 }
 
+
 variable "host_pool" {
   type        = string
   default     = "avdhostpool2"
