@@ -40,7 +40,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
   name                = var.host_pool
   resource_group_name = var.resource_group_name
   location            = var.location
-  load_balancer_type  = var.type
+  load_balancer_type  = "BreadthFirst" #["BreadthFirst" "DepthFirst"]
   type                = "Pooled"
 }
 
