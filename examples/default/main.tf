@@ -36,19 +36,28 @@ resource "azurerm_log_analytics_workspace" "this" {
   location            = azurerm_resource_group.this.location
 }
 
-resource "azurerm_virtual_desktop_host_pool" "this" {
-  name                = var.host_pool
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  load_balancer_type  = "BreadthFirst" #["BreadthFirst" "DepthFirst"]
-  type                = "Pooled"
+module "avm-res-desktopvirtualization-hostpool" {
+  source                                        = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version                                       = "0.1.3"
+  virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_name                = var.host_pool
+  virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
+  virtual_desktop_host_pool_load_balancer_type  = "BreadthFirst"
+  virtual_desktop_host_pool_type                = "Pooled"
+  resource_group_name                           = azurerm_resource_group.this.name
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = azurerm_log_analytics_workspace.this.id
+    }
+  }
 }
 
 resource "azurerm_virtual_desktop_application_group" "this" {
   name                = var.appgroupname
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  host_pool_id        = data.azurerm_virtual_desktop_host_pool.this.id
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+  host_pool_id        = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
   type                = var.type
 }
 
@@ -56,8 +65,8 @@ resource "azurerm_virtual_desktop_application_group" "this" {
 module "workspace" {
   source              = "../../"
   enable_telemetry    = var.enable_telemetry
-  resource_group_name = var.resource_group_name
-  location            = var.location
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
   name                = var.name
   description         = var.description
   diagnostic_settings = {
