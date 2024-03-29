@@ -18,10 +18,16 @@ module "naming" {
   version = "0.3.0"
 }
 
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  min = 0
+  max = length(local.azure_regions) - 1
+}
+
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
-  location = var.location
+  location = local.azure_regions[random_integer.region_index.result]
 }
 
 resource "azurerm_log_analytics_workspace" "this" {
@@ -54,8 +60,8 @@ resource "azurerm_private_dns_zone" "this" {
 module "workspace" {
   source                        = "../../"
   enable_telemetry              = var.enable_telemetry
-  resource_group_name           = var.resource_group_name
-  location                      = var.location
+  resource_group_name           = azurerm_resource_group.this.name
+  location                      = azurerm_resource_group.this.location
   name                          = var.name
   description                   = var.description
   public_network_access_enabled = var.public_network_access_enabled

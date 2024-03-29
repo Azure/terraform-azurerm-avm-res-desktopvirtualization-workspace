@@ -11,7 +11,12 @@ DESCRIPTION
 variable "name" {
   type        = string
   description = "The name of the AVD Workspace."
-  default     = "private-globalworkspace-empty"
+  default     = "globalprivate-empty"
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
+    error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
+  }
 }
 
 variable "description" {
@@ -24,17 +29,4 @@ variable "public_network_access_enabled" {
   type        = bool
   description = "Whether or not public network access is enabled for the AVD Workspace."
   default     = false
-}
-
-variable "resource_group_name" {
-  type        = string
-  default     = "rg-avm-test"
-  description = "The resource group where the AVD Workspace is deployed."
-}
-
-variable "location" {
-  type        = string
-  default     = "eastus"
-  description = "The location of the AVD Workspace."
-
 }

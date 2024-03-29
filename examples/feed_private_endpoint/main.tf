@@ -18,54 +18,74 @@ module "naming" {
   version = "0.3.0"
 }
 
-resource "azurerm_log_analytics_workspace" "this" {
-  name                = module.naming.log_analytics_workspace.name_unique
-  resource_group_name = var.resource_group_name
-  location            = var.location
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  min = 0
+  max = length(local.azure_regions) - 1
 }
 
-resource "azurerm_virtual_desktop_host_pool" "this" {
-  name                = var.host_pool
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  load_balancer_type  = "BreadthFirst" #["BreadthFirst" "DepthFirst"]
-  type                = "Pooled"
+# This is required for resource modules
+resource "azurerm_resource_group" "this" {
+  name     = module.naming.resource_group.name_unique
+  location = local.azure_regions[random_integer.region_index.result]
+}
+resource "azurerm_log_analytics_workspace" "this" {
+  name                = module.naming.log_analytics_workspace.name_unique
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+}
+
+module "avm-res-desktopvirtualization-hostpool" {
+  source                                        = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version                                       = "0.1.3"
+  virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_name                = var.host_pool
+  virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
+  virtual_desktop_host_pool_load_balancer_type  = "BreadthFirst"
+  virtual_desktop_host_pool_type                = "Pooled"
+  resource_group_name                           = azurerm_resource_group.this.name
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = azurerm_log_analytics_workspace.this.id
+    }
+  }
 }
 
 resource "azurerm_virtual_desktop_application_group" "this" {
   name                = var.appgroupname
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  host_pool_id        = data.azurerm_virtual_desktop_host_pool.this.id
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+  host_pool_id        = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
   type                = "Desktop"
 }
 
 # A vnet is required for the private endpoint.
 resource "azurerm_virtual_network" "this" {
   name                = module.naming.virtual_network.name_unique
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
   address_space       = ["192.168.0.0/24"]
 }
 
 resource "azurerm_subnet" "this" {
   name                 = module.naming.subnet.name_unique
-  resource_group_name  = var.resource_group_name
+  resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = ["192.168.0.0/24"]
 }
 
 resource "azurerm_private_dns_zone" "this" {
   name                = "privatelink.wvd.microsoft.com"
-  resource_group_name = var.resource_group_name
+  resource_group_name = azurerm_resource_group.this.name
 }
 
 # This is the module call
 module "workspace" {
   source                        = "../../"
   enable_telemetry              = var.enable_telemetry
-  resource_group_name           = var.resource_group_name
-  location                      = var.location
+  resource_group_name           = azurerm_resource_group.this.name
+  location                      = azurerm_resource_group.this.location
   name                          = var.name
   description                   = var.description
   public_network_access_enabled = var.public_network_access_enabled

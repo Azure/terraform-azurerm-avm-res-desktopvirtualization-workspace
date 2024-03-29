@@ -35,7 +35,6 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
   }
 }
 
-
 resource "azurerm_role_assignment" "this" {
   for_each                               = var.role_assignments
   scope                                  = azurerm_virtual_desktop_workspace.workspace.id
