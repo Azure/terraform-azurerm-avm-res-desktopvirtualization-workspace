@@ -1,3 +1,9 @@
+variable "description" {
+  type        = string
+  default     = "AVD Workspace for all your Azure Virtual Desktop deployment."
+  description = "The description of the AVD Workspace."
+}
+
 variable "enable_telemetry" {
   type        = bool
   default     = true
@@ -10,31 +16,17 @@ DESCRIPTION
 
 variable "name" {
   type        = string
+  default     = "globalprivate-empty"
   description = "The name of the AVD Workspace."
-  default     = "private-globalworkspace-empty"
-}
 
-variable "description" {
-  type        = string
-  description = "The description of the AVD Workspace."
-  default     = "AVD Workspace for all your Azure Virtual Desktop deployment."
+  validation {
+    condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
+    error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
+  }
 }
 
 variable "public_network_access_enabled" {
   type        = bool
-  description = "Whether or not public network access is enabled for the AVD Workspace."
   default     = false
-}
-
-variable "resource_group_name" {
-  type        = string
-  default     = "rg-avm-test"
-  description = "The resource group where the AVD Workspace is deployed."
-}
-
-variable "location" {
-  type        = string
-  default     = "eastus"
-  description = "The location of the AVD Workspace."
-
+  description = "Whether or not public network access is enabled for the AVD Workspace."
 }

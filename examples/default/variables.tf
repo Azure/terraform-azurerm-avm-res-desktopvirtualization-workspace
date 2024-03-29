@@ -1,3 +1,15 @@
+variable "appgroupname" {
+  type        = string
+  default     = "appgroup-1"
+  description = "The name of the application group"
+}
+
+variable "description" {
+  type        = string
+  default     = "This is a AVD workspace."
+  description = "The description of the AVD Workspace."
+}
+
 variable "enable_telemetry" {
   type        = bool
   default     = true
@@ -8,10 +20,16 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
+variable "host_pool" {
+  type        = string
+  default     = "avdhostpool"
+  description = "The name of the AVD Host Pool to assign the application group to."
+}
+
 variable "name" {
   type        = string
-  description = "The name of the AVD Workspace."
   default     = "workspace-1"
+  description = "The name of the AVD Workspace."
 
   validation {
     condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
@@ -19,38 +37,8 @@ variable "name" {
   }
 }
 
-variable "description" {
-  type        = string
-  description = "The description of the AVD Workspace."
-  default     = "This is a AVD workspace."
-}
-
-variable "appgroupname" {
-  description = "The name of the application group"
-  default     = "appgroup-1"
-  type        = string
-}
-
 variable "type" {
-  description = "The type of the application group"
+  type        = string
   default     = "Desktop"
-  type        = string
-}
-
-variable "host_pool" {
-  type        = string
-  default     = "avdhostpool"
-  description = "The name of the AVD Host Pool to assign the application group to."
-}
-
-variable "resource_group_name" {
-  type        = string
-  default     = "rg-avm-test"
-  description = "The resource group where the AVD Host Pool is deployed."
-}
-
-variable "location" {
-  type        = string
-  default     = "eastus"
-  description = "The location of the AVD Host Pool."
+  description = "The type of the application group"
 }

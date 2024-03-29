@@ -3,6 +3,96 @@
 
 This deploys the module in its simplest form.
 
+```hcl
+terraform {
+  required_version = ">= 1.0.0"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 3.7.0, < 4.0.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.6.0, <4.0.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+# This ensures we have unique CAF compliant names for our resources.
+module "naming" {
+  source  = "Azure/naming/azurerm"
+  version = "0.3.0"
+}
+
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  max = length(local.azure_regions) - 1
+  min = 0
+}
+
+# This is required for resource modules
+resource "azurerm_resource_group" "this" {
+  location = local.azure_regions[random_integer.region_index.result]
+  name     = module.naming.resource_group.name_unique
+}
+
+resource "azurerm_log_analytics_workspace" "this" {
+  location            = azurerm_resource_group.this.location
+  name                = module.naming.log_analytics_workspace.name_unique
+  resource_group_name = azurerm_resource_group.this.name
+}
+
+module "avm_res_desktopvirtualization_hostpool" {
+  source                                        = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version                                       = "0.1.3"
+  virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_name                = var.host_pool
+  virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
+  virtual_desktop_host_pool_load_balancer_type  = "BreadthFirst"
+  virtual_desktop_host_pool_type                = "Pooled"
+  resource_group_name                           = azurerm_resource_group.this.name
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = azurerm_log_analytics_workspace.this.id
+    }
+  }
+}
+
+resource "azurerm_virtual_desktop_application_group" "this" {
+  host_pool_id        = module.avm_res_desktopvirtualization_hostpool.azure_virtual_desktop_host_pool_id
+  location            = azurerm_resource_group.this.location
+  name                = var.appgroupname
+  resource_group_name = azurerm_resource_group.this.name
+  type                = var.type
+}
+
+# This is the module call
+module "workspace" {
+  source              = "../../"
+  enable_telemetry    = var.enable_telemetry
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+  name                = var.name
+  description         = var.description
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = azurerm_log_analytics_workspace.this.id
+    }
+  }
+}
+
+resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
+  application_group_id = azurerm_virtual_desktop_application_group.this.id
+  workspace_id         = module.workspace.workspace_id
+}
+```
+
 <!-- markdownlint-disable MD033 -->
 ## Requirements
 
@@ -12,13 +102,15 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0.0)
 
+- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.6.0, <4.0.0)
+
 ## Providers
 
 The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
 
-- <a name="provider_random"></a> [random](#provider\_random)
+- <a name="provider_random"></a> [random](#provider\_random) (>= 3.6.0, <4.0.0)
 
 ## Resources
 
@@ -27,7 +119,6 @@ The following resources are used by this module:
 - [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) (resource)
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [azurerm_virtual_desktop_application_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_application_group) (resource)
-- [azurerm_virtual_desktop_host_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_host_pool) (resource)
 - [azurerm_virtual_desktop_workspace_application_group_association.workappgrassoc](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_workspace_application_group_association) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 
@@ -74,14 +165,6 @@ Type: `string`
 
 Default: `"avdhostpool"`
 
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: The location of the AVD Host Pool.
-
-Type: `string`
-
-Default: `"eastus"`
-
 ### <a name="input_name"></a> [name](#input\_name)
 
 Description: The name of the AVD Workspace.
@@ -89,14 +172,6 @@ Description: The name of the AVD Workspace.
 Type: `string`
 
 Default: `"workspace-1"`
-
-### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
-
-Description: The resource group where the AVD Host Pool is deployed.
-
-Type: `string`
-
-Default: `"rg-avm-test"`
 
 ### <a name="input_type"></a> [type](#input\_type)
 
@@ -113,6 +188,12 @@ No outputs.
 ## Modules
 
 The following Modules are called:
+
+### <a name="module_avm_res_desktopvirtualization_hostpool"></a> [avm\_res\_desktopvirtualization\_hostpool](#module\_avm\_res\_desktopvirtualization\_hostpool)
+
+Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
+
+Version: 0.1.3
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 

@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.7.0, < 4.0.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.6.0, <4.0.0"
+    }
   }
 }
 
@@ -18,31 +22,37 @@ module "naming" {
   version = "0.3.0"
 }
 
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  max = length(local.azure_regions) - 1
+  min = 0
+}
+
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
+  location = local.azure_regions[random_integer.region_index.result]
   name     = module.naming.resource_group.name_unique
-  location = var.location
 }
 
 resource "azurerm_log_analytics_workspace" "this" {
+  location            = azurerm_resource_group.this.location
   name                = module.naming.log_analytics_workspace.name_unique
   resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
 }
 
 # A vnet is required for the private endpoint.
 resource "azurerm_virtual_network" "this" {
-  name                = module.naming.virtual_network.name_unique
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
   address_space       = ["192.168.0.0/24"]
+  location            = azurerm_resource_group.this.location
+  name                = module.naming.virtual_network.name_unique
+  resource_group_name = azurerm_resource_group.this.name
 }
 
 resource "azurerm_subnet" "this" {
+  address_prefixes     = ["192.168.0.0/24"]
   name                 = module.naming.subnet.name_unique
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["192.168.0.0/24"]
 }
 
 resource "azurerm_private_dns_zone" "this" {
@@ -54,8 +64,8 @@ resource "azurerm_private_dns_zone" "this" {
 module "workspace" {
   source                        = "../../"
   enable_telemetry              = var.enable_telemetry
-  resource_group_name           = var.resource_group_name
-  location                      = var.location
+  resource_group_name           = azurerm_resource_group.this.name
+  location                      = azurerm_resource_group.this.location
   name                          = var.name
   description                   = var.description
   public_network_access_enabled = var.public_network_access_enabled

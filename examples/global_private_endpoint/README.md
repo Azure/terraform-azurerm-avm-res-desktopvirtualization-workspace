@@ -1,7 +1,97 @@
 <!-- BEGIN_TF_DOCS -->
 # Global private endpoint example
 
-This deploys the module with a initial feed discovery private endpoint. Only one for all your Azure Virtual Desktop deployment. Public access is disabled.
+This deploys the module for Azure Virtual Desktop initial feed discovery private endpoint. Workspace feed requests are denied from public routes. Workspace feed requests are allowed from private routes.
+Only one for all your Azure Virtual Desktop deployment. Public access is disabled. Refer to [Supported scenaios](https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-overview) for furhter details.
+
+```hcl
+terraform {
+  required_version = ">= 1.0.0"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 3.7.0, < 4.0.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.6.0, <4.0.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+# This ensures we have unique CAF compliant names for our resources.
+module "naming" {
+  source  = "Azure/naming/azurerm"
+  version = "0.3.0"
+}
+
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  max = length(local.azure_regions) - 1
+  min = 0
+}
+
+# This is required for resource modules
+resource "azurerm_resource_group" "this" {
+  location = local.azure_regions[random_integer.region_index.result]
+  name     = module.naming.resource_group.name_unique
+}
+
+resource "azurerm_log_analytics_workspace" "this" {
+  location            = azurerm_resource_group.this.location
+  name                = module.naming.log_analytics_workspace.name_unique
+  resource_group_name = azurerm_resource_group.this.name
+}
+
+# A vnet is required for the private endpoint.
+resource "azurerm_virtual_network" "this" {
+  address_space       = ["192.168.0.0/24"]
+  location            = azurerm_resource_group.this.location
+  name                = module.naming.virtual_network.name_unique
+  resource_group_name = azurerm_resource_group.this.name
+}
+
+resource "azurerm_subnet" "this" {
+  address_prefixes     = ["192.168.0.0/24"]
+  name                 = module.naming.subnet.name_unique
+  resource_group_name  = azurerm_resource_group.this.name
+  virtual_network_name = azurerm_virtual_network.this.name
+}
+
+resource "azurerm_private_dns_zone" "this" {
+  name                = "privatelink-global.wvd.microsoft.com"
+  resource_group_name = azurerm_resource_group.this.name
+}
+
+# This is the module call
+module "workspace" {
+  source                        = "../../"
+  enable_telemetry              = var.enable_telemetry
+  resource_group_name           = azurerm_resource_group.this.name
+  location                      = azurerm_resource_group.this.location
+  name                          = var.name
+  description                   = var.description
+  public_network_access_enabled = var.public_network_access_enabled
+  subresource_names             = ["global"]
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = azurerm_log_analytics_workspace.this.id
+    }
+  }
+  private_endpoints = {
+    primary = {
+      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
+      subnet_resource_id            = azurerm_subnet.this.id
+    }
+  }
+}
+
+```
 
 <!-- markdownlint-disable MD033 -->
 ## Requirements
@@ -12,11 +102,15 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0.0)
 
+- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.6.0, <4.0.0)
+
 ## Providers
 
 The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
+
+- <a name="provider_random"></a> [random](#provider\_random) (>= 3.6.0, <4.0.0)
 
 ## Resources
 
@@ -27,6 +121,7 @@ The following resources are used by this module:
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [azurerm_subnet.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) (resource)
 - [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
+- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -55,21 +150,13 @@ Type: `bool`
 
 Default: `true`
 
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: The location of the AVD Workspace.
-
-Type: `string`
-
-Default: `"eastus"`
-
 ### <a name="input_name"></a> [name](#input\_name)
 
 Description: The name of the AVD Workspace.
 
 Type: `string`
 
-Default: `"private-globalworkspace-empty"`
+Default: `"globalprivate-empty"`
 
 ### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
 
@@ -78,14 +165,6 @@ Description: Whether or not public network access is enabled for the AVD Workspa
 Type: `bool`
 
 Default: `false`
-
-### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
-
-Description: The resource group where the AVD Workspace is deployed.
-
-Type: `string`
-
-Default: `"rg-avm-test"`
 
 ## Outputs
 
