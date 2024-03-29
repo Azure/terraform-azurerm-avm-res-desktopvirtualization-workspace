@@ -11,6 +11,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.7.0, < 4.0.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.6.0, <4.0.0"
+    }
   }
 }
 
@@ -42,7 +46,7 @@ resource "azurerm_log_analytics_workspace" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-module "avm-res-desktopvirtualization-hostpool" {
+module "avm_res_desktopvirtualization_hostpool" {
   source                                        = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
   version                                       = "0.1.3"
   virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
@@ -98,13 +102,15 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0.0)
 
+- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.6.0, <4.0.0)
+
 ## Providers
 
 The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
 
-- <a name="provider_random"></a> [random](#provider\_random)
+- <a name="provider_random"></a> [random](#provider\_random) (>= 3.6.0, <4.0.0)
 
 ## Resources
 
@@ -159,14 +165,6 @@ Type: `string`
 
 Default: `"avdhostpool"`
 
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: The location of the AVD Host Pool.
-
-Type: `string`
-
-Default: `"eastus"`
-
 ### <a name="input_name"></a> [name](#input\_name)
 
 Description: The name of the AVD Workspace.
@@ -183,14 +181,6 @@ Type: `string`
 
 Default: `"Desktop"`
 
-### <a name="input_user_group_name"></a> [user\_group\_name](#input\_user\_group\_name)
-
-Description: Microsoft Entra ID User Group for AVD users
-
-Type: `string`
-
-Default: `"avdusersgrp"`
-
 ## Outputs
 
 No outputs.
@@ -199,7 +189,7 @@ No outputs.
 
 The following Modules are called:
 
-### <a name="module_avm-res-desktopvirtualization-hostpool"></a> [avm-res-desktopvirtualization-hostpool](#module\_avm-res-desktopvirtualization-hostpool)
+### <a name="module_avm_res_desktopvirtualization_hostpool"></a> [avm\_res\_desktopvirtualization\_hostpool](#module\_avm\_res\_desktopvirtualization\_hostpool)
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 

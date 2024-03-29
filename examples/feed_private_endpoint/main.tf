@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.7.0, < 4.0.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.6.0, <4.0.0"
+    }
   }
 }
 
@@ -35,7 +39,7 @@ resource "azurerm_log_analytics_workspace" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-module "avm-res-desktopvirtualization-hostpool" {
+module "avm_res_desktopvirtualization_hostpool" {
   source                                        = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
   version                                       = "0.1.3"
   virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
@@ -97,7 +101,6 @@ module "workspace" {
     }
   }
   diagnostic_settings = {
-    // This is the default diagnostic setting
     default = {
       name                  = "default"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id

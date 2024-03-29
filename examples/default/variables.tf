@@ -26,12 +26,6 @@ variable "host_pool" {
   description = "The name of the AVD Host Pool to assign the application group to."
 }
 
-variable "location" {
-  type        = string
-  default     = "eastus"
-  description = "The location of the AVD Host Pool."
-}
-
 variable "name" {
   type        = string
   default     = "workspace-1"
@@ -47,10 +41,4 @@ variable "type" {
   type        = string
   default     = "Desktop"
   description = "The type of the application group"
-}
-
-variable "user_group_name" {
-  type        = string
-  default     = "avdusersgrp"
-  description = "Microsoft Entra ID User Group for AVD users"
 }

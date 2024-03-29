@@ -42,9 +42,3 @@ variable "public_network_access_enabled" {
   default     = false
   description = "Whether or not public network access is enabled for the AVD Workspace."
 }
-
-variable "subresource_names" {
-  type        = string
-  default     = "feed"
-  description = "The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'."
-}
