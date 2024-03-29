@@ -58,7 +58,7 @@ module "avm_res_desktopvirtualization_hostpool" {
 }
 
 resource "azurerm_virtual_desktop_application_group" "this" {
-  host_pool_id        = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
+  host_pool_id        = module.avm_res_desktopvirtualization_hostpool.azure_virtual_desktop_host_pool_id
   location            = azurerm_resource_group.this.location
   name                = var.appgroupname
   resource_group_name = azurerm_resource_group.this.name
