@@ -26,19 +26,19 @@ module "naming" {
 
 # This picks a random region from the list of regions.
 resource "random_integer" "region_index" {
-  min = 0
   max = length(local.azure_regions) - 1
+  min = 0
 }
 
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
-  name     = module.naming.resource_group.name_unique
   location = local.azure_regions[random_integer.region_index.result]
+  name     = module.naming.resource_group.name_unique
 }
 resource "azurerm_log_analytics_workspace" "this" {
+  location            = azurerm_resource_group.this.location
   name                = module.naming.log_analytics_workspace.name_unique
   resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
 }
 
 module "avm-res-desktopvirtualization-hostpool" {
@@ -59,26 +59,26 @@ module "avm-res-desktopvirtualization-hostpool" {
 }
 
 resource "azurerm_virtual_desktop_application_group" "this" {
+  host_pool_id        = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
+  location            = azurerm_resource_group.this.location
   name                = var.appgroupname
   resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  host_pool_id        = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
   type                = "Desktop"
 }
 
 # A vnet is required for the private endpoint.
 resource "azurerm_virtual_network" "this" {
-  name                = module.naming.virtual_network.name_unique
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
   address_space       = ["192.168.0.0/24"]
+  location            = azurerm_resource_group.this.location
+  name                = module.naming.virtual_network.name_unique
+  resource_group_name = azurerm_resource_group.this.name
 }
 
 resource "azurerm_subnet" "this" {
+  address_prefixes     = ["192.168.0.0/24"]
   name                 = module.naming.subnet.name_unique
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["192.168.0.0/24"]
 }
 
 resource "azurerm_private_dns_zone" "this" {
@@ -112,8 +112,8 @@ module "workspace" {
 }
 
 resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
-  workspace_id         = module.workspace.workspace_id
   application_group_id = azurerm_virtual_desktop_application_group.this.id
+  workspace_id         = module.workspace.workspace_id
 }
 ```
 

@@ -1,3 +1,9 @@
+variable "description" {
+  type        = string
+  default     = "AVD Workspace for all your Azure Virtual Desktop deployment."
+  description = "The description of the AVD Workspace."
+}
+
 variable "enable_telemetry" {
   type        = bool
   default     = true
@@ -10,8 +16,8 @@ DESCRIPTION
 
 variable "name" {
   type        = string
-  description = "The name of the AVD Workspace."
   default     = "globalprivate-empty"
+  description = "The name of the AVD Workspace."
 
   validation {
     condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
@@ -19,14 +25,8 @@ variable "name" {
   }
 }
 
-variable "description" {
-  type        = string
-  description = "The description of the AVD Workspace."
-  default     = "AVD Workspace for all your Azure Virtual Desktop deployment."
-}
-
 variable "public_network_access_enabled" {
   type        = bool
-  description = "Whether or not public network access is enabled for the AVD Workspace."
   default     = false
+  description = "Whether or not public network access is enabled for the AVD Workspace."
 }

@@ -1,6 +1,5 @@
 # We pick a random region from this list.
 locals {
-  role_definition_resource_substring = "/providers/Microsoft.Authorization/roleDefinitions"
   azure_regions = [
     "centralindia",
     "uksouth",
@@ -21,5 +20,6 @@ locals {
     "westcentralus",
     "centralus",
   ]
+  role_definition_resource_substring = "/providers/Microsoft.Authorization/roleDefinitions"
 }
 
