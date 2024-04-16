@@ -1,6 +1,10 @@
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = ">= 2.44.1, < 3.0.0"
+    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = ">= 3.7.0, < 4.0.0"
@@ -42,7 +46,7 @@ resource "azurerm_log_analytics_workspace" "this" {
 
 module "avm_res_desktopvirtualization_hostpool" {
   source                                        = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version                                       = "0.1.3"
+  version                                       = "0.1.4"
   virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_host_pool_name                = var.host_pool
   virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
@@ -57,12 +61,34 @@ module "avm_res_desktopvirtualization_hostpool" {
   }
 }
 
-resource "azurerm_virtual_desktop_application_group" "this" {
-  host_pool_id        = module.avm_res_desktopvirtualization_hostpool.azure_virtual_desktop_host_pool_id
-  location            = azurerm_resource_group.this.location
-  name                = var.appgroupname
-  resource_group_name = azurerm_resource_group.this.name
-  type                = var.type
+# Get an existing built-in role definition
+data "azurerm_role_definition" "this" {
+  name = "Desktop Virtualization User"
+}
+
+# Get an existing Azure AD group that will be assigned to the application group
+data "azuread_group" "existing" {
+  display_name     = var.user_group_name
+  security_enabled = true
+}
+
+# Assign the Azure AD group to the application group
+resource "azurerm_role_assignment" "this" {
+  principal_id                     = data.azuread_group.existing.object_id
+  scope                            = module.avm_res_desktopvirtualization_applicationgroup.resource.id
+  role_definition_id               = data.azurerm_role_definition.this.id
+  skip_service_principal_aad_check = false
+}
+
+module "avm_res_desktopvirtualization_applicationgroup" {
+  source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
+  version                                               = "0.1.2"
+  virtual_desktop_application_group_name                = var.appgroupname
+  virtual_desktop_application_group_type                = var.type
+  virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
+  virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_application_group_location            = azurerm_resource_group.this.location
+  user_group_name                                       = "avdusersgrp"
 }
 
 # This is the module call
@@ -82,6 +108,6 @@ module "workspace" {
 }
 
 resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
-  application_group_id = azurerm_virtual_desktop_application_group.this.id
-  workspace_id         = module.workspace.workspace_id
+  application_group_id = module.avm_res_desktopvirtualization_applicationgroup.resource.id
+  workspace_id         = module.workspace.resource.id
 }

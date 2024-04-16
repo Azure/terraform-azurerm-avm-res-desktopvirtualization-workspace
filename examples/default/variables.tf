@@ -42,3 +42,9 @@ variable "type" {
   default     = "Desktop"
   description = "The type of the application group"
 }
+
+variable "user_group_name" {
+  type        = string
+  default     = "avdusersgrp"
+  description = "Microsoft Entra ID User Group for AVD users"
+}

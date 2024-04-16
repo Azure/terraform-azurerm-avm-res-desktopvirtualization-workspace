@@ -42,3 +42,15 @@ variable "public_network_access_enabled" {
   default     = false
   description = "Whether or not public network access is enabled for the AVD Workspace."
 }
+
+variable "type" {
+  type        = string
+  default     = "Desktop"
+  description = "The type of the application group"
+}
+
+variable "user_group_name" {
+  type        = string
+  default     = "avdusersgrp"
+  description = "Microsoft Entra ID User Group for AVD users"
+}
