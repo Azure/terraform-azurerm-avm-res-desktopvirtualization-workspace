@@ -81,7 +81,7 @@ data "azuread_group" "existing" {
 # Assign the Azure AD group to the application group
 resource "azurerm_role_assignment" "this" {
   principal_id                     = data.azuread_group.existing.object_id
-  scope                            = module.avm-res-desktopvirtualization-applicationgroup.resource.id
+  scope                            = module.avm_res_desktopvirtualization_applicationgroup.resource.id
   role_definition_id               = data.azurerm_role_definition.this.id
   skip_service_principal_aad_check = false
 }
