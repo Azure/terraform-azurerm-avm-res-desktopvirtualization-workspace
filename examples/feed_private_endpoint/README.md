@@ -85,10 +85,10 @@ resource "azurerm_role_assignment" "this" {
   skip_service_principal_aad_check = false
 }
 
-module "avm-res-desktopvirtualization-applicationgroup" {
+module "avm_res_desktopvirtualization_applicationgroup" {
   source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
   version                                               = "0.1.2"
-  virtual_desktop_application_group_name                = var.name
+  virtual_desktop_application_group_name                = var.appgroupname
   virtual_desktop_application_group_type                = var.type
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
@@ -267,7 +267,7 @@ No outputs.
 
 The following Modules are called:
 
-### <a name="module_avm-res-desktopvirtualization-applicationgroup"></a> [avm-res-desktopvirtualization-applicationgroup](#module\_avm-res-desktopvirtualization-applicationgroup)
+### <a name="module_avm_res_desktopvirtualization_applicationgroup"></a> [avm\_res\_desktopvirtualization\_applicationgroup](#module\_avm\_res\_desktopvirtualization\_applicationgroup)
 
 Source: Azure/avm-res-desktopvirtualization-applicationgroup/azurerm
 
