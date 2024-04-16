@@ -47,7 +47,7 @@ resource "azurerm_log_analytics_workspace" "this" {
 
 module "avm_res_desktopvirtualization_hostpool" {
   source                                        = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version                                       = "0.1.3"
+  version                                       = "0.1.4"
   virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_host_pool_name                = var.host_pool
   virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
@@ -62,12 +62,34 @@ module "avm_res_desktopvirtualization_hostpool" {
   }
 }
 
-resource "azurerm_virtual_desktop_application_group" "this" {
-  host_pool_id        = module.avm_res_desktopvirtualization_hostpool.azure_virtual_desktop_host_pool_id
-  location            = azurerm_resource_group.this.location
-  name                = var.appgroupname
-  resource_group_name = azurerm_resource_group.this.name
-  type                = "Desktop"
+# Get an existing built-in role definition
+data "azurerm_role_definition" "this" {
+  name = "Desktop Virtualization User"
+}
+
+# Get an existing Azure AD group that will be assigned to the application group
+data "azuread_group" "existing" {
+  display_name     = var.user_group_name
+  security_enabled = true
+}
+
+# Assign the Azure AD group to the application group
+resource "azurerm_role_assignment" "this" {
+  principal_id                     = data.azuread_group.existing.object_id
+  scope                            = module.avm-res-desktopvirtualization-applicationgroup.resource.id
+  role_definition_id               = data.azurerm_role_definition.this.id
+  skip_service_principal_aad_check = false
+}
+
+module "avm-res-desktopvirtualization-applicationgroup" {
+  source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
+  version                                               = "0.1.2"
+  virtual_desktop_application_group_name                = var.name
+  virtual_desktop_application_group_type                = var.type
+  virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
+  virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_application_group_location            = azurerm_resource_group.this.location
+  user_group_name                                       = "avdusersgrp"
 }
 
 # A vnet is required for the private endpoint.
@@ -115,8 +137,8 @@ module "workspace" {
 }
 
 resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
-  application_group_id = azurerm_virtual_desktop_application_group.this.id
-  workspace_id         = module.workspace.workspace_id
+  application_group_id = module.avm-res-desktopvirtualization-applicationgroup.resource.id
+  workspace_id         = module.workspace.resource.id
 }
 ```
 
@@ -135,6 +157,8 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
+- <a name="provider_azuread"></a> [azuread](#provider\_azuread)
+
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
 
 - <a name="provider_random"></a> [random](#provider\_random) (>= 3.6.0, <4.0.0)
@@ -146,11 +170,13 @@ The following resources are used by this module:
 - [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) (resource)
 - [azurerm_private_dns_zone.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) (resource)
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [azurerm_subnet.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) (resource)
-- [azurerm_virtual_desktop_application_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_application_group) (resource)
 - [azurerm_virtual_desktop_workspace_application_group_association.workappgrassoc](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_workspace_application_group_association) (resource)
 - [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
+- [azuread_group.existing](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) (data source)
+- [azurerm_role_definition.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -211,6 +237,22 @@ Type: `bool`
 
 Default: `false`
 
+### <a name="input_type"></a> [type](#input\_type)
+
+Description: The type of the application group
+
+Type: `string`
+
+Default: `"Desktop"`
+
+### <a name="input_user_group_name"></a> [user\_group\_name](#input\_user\_group\_name)
+
+Description: Microsoft Entra ID User Group for AVD users
+
+Type: `string`
+
+Default: `"avdusersgrp"`
+
 ## Outputs
 
 No outputs.
@@ -219,11 +261,17 @@ No outputs.
 
 The following Modules are called:
 
+### <a name="module_avm-res-desktopvirtualization-applicationgroup"></a> [avm-res-desktopvirtualization-applicationgroup](#module\_avm-res-desktopvirtualization-applicationgroup)
+
+Source: Azure/avm-res-desktopvirtualization-applicationgroup/azurerm
+
+Version: 0.1.2
+
 ### <a name="module_avm_res_desktopvirtualization_hostpool"></a> [avm\_res\_desktopvirtualization\_hostpool](#module\_avm\_res\_desktopvirtualization\_hostpool)
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 
-Version: 0.1.3
+Version: 0.1.4
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
