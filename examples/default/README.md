@@ -114,7 +114,7 @@ module "workspace" {
 }
 
 resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
-  application_group_id = module.avm-res-desktopvirtualization-applicationgroup.resource.id
+  application_group_id = module.avm_res_desktopvirtualization_applicationgroup.resource.id
   workspace_id         = module.workspace.resource.id
 }
 ```
