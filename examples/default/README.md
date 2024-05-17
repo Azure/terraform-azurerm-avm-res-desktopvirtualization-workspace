@@ -2,6 +2,9 @@
 # Default example
 
 This deploys the module in its simplest form.
+This sample will create the group to allow the code to deploy for an end to end to deployment however this is not a supported scenario and expects you to have the user group already synchcronized in Microsoft Entra ID per https://learn.microsoft.com/en-us/azure/virtual-desktop/prerequisites?tabs=portal#users
+
+Variables file had default values that you should change for your environment.
 
 ```hcl
 terraform {
@@ -67,34 +70,37 @@ module "avm_res_desktopvirtualization_hostpool" {
   }
 }
 
+/*
 # Get an existing built-in role definition
 data "azurerm_role_definition" "this" {
   name = "Desktop Virtualization User"
 }
 
-# Get an existing Azure AD group that will be assigned to the application group
-data "azuread_group" "existing" {
+# This sample will create the group defined in the variable user_group_nam. It allows the code to deploy for an end to end to deployment however this is not a supported scenario and expects you to have the user group already synchcronized in Microsoft Entra ID per https://learn.microsoft.com/en-us/azure/virtual-desktop/prerequisites?tabs=portal#users
+# You should replace this with your own code to a data block to fetch the group in your own environment.
+resource "azuread_group" "new" {
   display_name     = var.user_group_name
   security_enabled = true
 }
 
 # Assign the Azure AD group to the application group
 resource "azurerm_role_assignment" "this" {
-  principal_id                     = data.azuread_group.existing.object_id
+  principal_id                     = azuread_group.new.id
   scope                            = module.avm_res_desktopvirtualization_applicationgroup.resource.id
   role_definition_id               = data.azurerm_role_definition.this.id
   skip_service_principal_aad_check = false
 }
+*/
 
 module "avm_res_desktopvirtualization_applicationgroup" {
   source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
-  version                                               = "0.1.2"
+  version                                               = "0.1.3"
   virtual_desktop_application_group_name                = var.appgroupname
   virtual_desktop_application_group_type                = var.type
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_location            = azurerm_resource_group.this.location
-  user_group_name                                       = "avdusersgrp"
+  user_group_name                                       = var.user_group_name
 }
 
 # This is the module call
@@ -136,8 +142,6 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
-- <a name="provider_azuread"></a> [azuread](#provider\_azuread) (>= 2.44.1, < 3.0.0)
-
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
 
 - <a name="provider_random"></a> [random](#provider\_random) (>= 3.6.0, <4.0.0)
@@ -148,11 +152,8 @@ The following resources are used by this module:
 
 - [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) (resource)
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [azurerm_virtual_desktop_workspace_application_group_association.workappgrassoc](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_workspace_application_group_association) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
-- [azuread_group.existing](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) (data source)
-- [azurerm_role_definition.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -219,7 +220,7 @@ Description: Microsoft Entra ID User Group for AVD users
 
 Type: `string`
 
-Default: `"avdusersgrp"`
+Default: `"avdusergroup"`
 
 ## Outputs
 
@@ -233,7 +234,7 @@ The following Modules are called:
 
 Source: Azure/avm-res-desktopvirtualization-applicationgroup/azurerm
 
-Version: 0.1.2
+Version: 0.1.3
 
 ### <a name="module_avm_res_desktopvirtualization_hostpool"></a> [avm\_res\_desktopvirtualization\_hostpool](#module\_avm\_res\_desktopvirtualization\_hostpool)
 

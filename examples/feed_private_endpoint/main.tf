@@ -60,12 +60,15 @@ module "avm_res_desktopvirtualization_hostpool" {
   }
 }
 
+/*
 # Get an existing built-in role definition
 data "azurerm_role_definition" "this" {
   name = "Desktop Virtualization User"
 }
 
-# Get an existing Azure AD group that will be assigned to the application group
+# This sample will create the group defined in the variable user_group_nam. It allows the code to deploy for an end to end to deployment however this is not a supported scenario and expects you to have the user group already synchcronized in Microsoft Entra ID per https://learn.microsoft.com/en-us/azure/virtual-desktop/prerequisites?tabs=portal#users
+# You should replace this with your own code to a data block to fetch the group in your own environment.
+
 data "azuread_group" "existing" {
   display_name     = var.user_group_name
   security_enabled = true
@@ -73,21 +76,24 @@ data "azuread_group" "existing" {
 
 # Assign the Azure AD group to the application group
 resource "azurerm_role_assignment" "this" {
-  principal_id                     = data.azuread_group.existing.object_id
-  scope                            = module.avm_res_desktopvirtualization_applicationgroup.resource.id
+  principal_id                     = data.azuread_group.existing.id
+  scope                            = module.appgroup.resource.id
   role_definition_id               = data.azurerm_role_definition.this.id
   skip_service_principal_aad_check = false
 }
+*/
 
+# Create Azure Virtual Desktop application group
 module "avm_res_desktopvirtualization_applicationgroup" {
   source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
-  version                                               = "0.1.2"
-  virtual_desktop_application_group_name                = var.appgroupname
-  virtual_desktop_application_group_type                = var.type
+  version                                               = "0.1.3"
+  enable_telemetry                                      = var.enable_telemetry
+  virtual_desktop_application_group_name                = var.virtual_desktop_application_group_name
+  virtual_desktop_application_group_type                = var.virtual_desktop_application_group_type
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_location            = azurerm_resource_group.this.location
-  user_group_name                                       = "avdusersgrp"
+  user_group_name                                       = var.user_group_name
 }
 
 # A vnet is required for the private endpoint.
