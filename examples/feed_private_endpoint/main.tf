@@ -81,7 +81,7 @@ resource "azurerm_role_assignment" "this" {
 
 module "avm_res_desktopvirtualization_applicationgroup" {
   source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
-  version                                               = "0.1.2"
+  version                                               = "0.1.3"
   virtual_desktop_application_group_name                = var.appgroupname
   virtual_desktop_application_group_type                = var.type
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id

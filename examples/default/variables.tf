@@ -45,6 +45,6 @@ variable "type" {
 
 variable "user_group_name" {
   type        = string
-  default     = "avdusersgrp"
+  default     = "avdusergroup"
   description = "Microsoft Entra ID User Group for AVD users"
 }
