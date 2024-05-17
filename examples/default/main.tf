@@ -61,11 +61,11 @@ module "avm_res_desktopvirtualization_hostpool" {
   }
 }
 
+/*
 # Get an existing built-in role definition
 data "azurerm_role_definition" "this" {
   name = "Desktop Virtualization User"
 }
-
 
 # This sample will create the group defined in the variable user_group_nam. It allows the code to deploy for an end to end to deployment however this is not a supported scenario and expects you to have the user group already synchcronized in Microsoft Entra ID per https://learn.microsoft.com/en-us/azure/virtual-desktop/prerequisites?tabs=portal#users
 # You should replace this with your own code to a data block to fetch the group in your own environment.
@@ -74,7 +74,6 @@ resource "azuread_group" "new" {
   security_enabled = true
 }
 
-
 # Assign the Azure AD group to the application group
 resource "azurerm_role_assignment" "this" {
   principal_id                     = azuread_group.new.id
@@ -82,6 +81,7 @@ resource "azurerm_role_assignment" "this" {
   role_definition_id               = data.azurerm_role_definition.this.id
   skip_service_principal_aad_check = false
 }
+*/
 
 module "avm_res_desktopvirtualization_applicationgroup" {
   source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"

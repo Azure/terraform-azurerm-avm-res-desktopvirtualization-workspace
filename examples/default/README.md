@@ -70,11 +70,11 @@ module "avm_res_desktopvirtualization_hostpool" {
   }
 }
 
+/*
 # Get an existing built-in role definition
 data "azurerm_role_definition" "this" {
   name = "Desktop Virtualization User"
 }
-
 
 # This sample will create the group defined in the variable user_group_nam. It allows the code to deploy for an end to end to deployment however this is not a supported scenario and expects you to have the user group already synchcronized in Microsoft Entra ID per https://learn.microsoft.com/en-us/azure/virtual-desktop/prerequisites?tabs=portal#users
 # You should replace this with your own code to a data block to fetch the group in your own environment.
@@ -83,7 +83,6 @@ resource "azuread_group" "new" {
   security_enabled = true
 }
 
-
 # Assign the Azure AD group to the application group
 resource "azurerm_role_assignment" "this" {
   principal_id                     = azuread_group.new.id
@@ -91,6 +90,7 @@ resource "azurerm_role_assignment" "this" {
   role_definition_id               = data.azurerm_role_definition.this.id
   skip_service_principal_aad_check = false
 }
+*/
 
 module "avm_res_desktopvirtualization_applicationgroup" {
   source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
@@ -142,8 +142,6 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
-- <a name="provider_azuread"></a> [azuread](#provider\_azuread) (>= 2.44.1, < 3.0.0)
-
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
 
 - <a name="provider_random"></a> [random](#provider\_random) (>= 3.6.0, <4.0.0)
@@ -152,13 +150,10 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
-- [azuread_group.new](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group) (resource)
 - [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) (resource)
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [azurerm_virtual_desktop_workspace_application_group_association.workappgrassoc](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_workspace_application_group_association) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
-- [azurerm_role_definition.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs

@@ -54,3 +54,20 @@ variable "user_group_name" {
   default     = "avdusersgrp"
   description = "Microsoft Entra ID User Group for AVD users"
 }
+
+variable "virtual_desktop_application_group_name" {
+  type        = string
+  default     = "vdag-avd-001"
+  description = "The name of the AVD Application Group."
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]{3,24}$", var.virtual_desktop_application_group_name))
+    error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
+  }
+}
+
+variable "virtual_desktop_application_group_type" {
+  type        = string
+  default     = "Desktop"
+  description = "The type of the AVD Application Group. Valid values are 'Desktop' and 'RemoteApp'."
+}
