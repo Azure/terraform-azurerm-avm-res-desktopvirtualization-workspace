@@ -10,10 +10,6 @@ Variables file had default values that you should change for your environment.
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = ">= 2.44.1, < 3.0.0"
-    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = ">= 3.7.0, < 4.0.0"
@@ -55,7 +51,7 @@ resource "azurerm_log_analytics_workspace" "this" {
 
 module "avm_res_desktopvirtualization_hostpool" {
   source                                        = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version                                       = "0.1.4"
+  version                                       = "0.1.5"
   virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_host_pool_name                = var.host_pool
   virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
@@ -131,8 +127,6 @@ resource "azurerm_virtual_desktop_workspace_application_group_association" "work
 The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.0.0)
-
-- <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) (>= 2.44.1, < 3.0.0)
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0.0)
 
@@ -240,7 +234,7 @@ Version: 0.1.3
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 
-Version: 0.1.4
+Version: 0.1.5
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 

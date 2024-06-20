@@ -9,5 +9,4 @@ locals {
       }
     ]
   ]) : "${assoc.pe_key}-${assoc.asg_key}" => assoc }
-  role_definition_resource_substring = "/providers/Microsoft.Authorization/roleDefinitions"
 }

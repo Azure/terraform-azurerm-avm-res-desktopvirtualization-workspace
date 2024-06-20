@@ -6,6 +6,7 @@ variable "description" {
 variable "location" {
   type        = string
   description = "The Azure location where the resources will be deployed."
+  nullable    = false
 }
 
 # Define variables for the AVD Host Pool deployment
@@ -69,6 +70,7 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "lock" {
   type = object({
     kind = string
@@ -110,6 +112,7 @@ variable "private_endpoints" {
       condition                              = optional(string, null)
       condition_version                      = optional(string, null)
       delegated_managed_identity_resource_id = optional(string, null)
+      principal_type                         = optional(string, null)
     })), {})
     lock = optional(object({
       name = optional(string, null)
@@ -155,6 +158,7 @@ variable "public_network_access_enabled" {
   description = "Whether or not public network access is enabled for the AVD Workspace."
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "role_assignments" {
   type = map(object({
     role_definition_id_or_name             = string
@@ -164,6 +168,7 @@ variable "role_assignments" {
     condition                              = optional(string, null)
     condition_version                      = optional(string, null)
     delegated_managed_identity_resource_id = optional(string, null)
+    principal_type                         = optional(string, null)
   }))
   default     = {}
   description = <<DESCRIPTION
