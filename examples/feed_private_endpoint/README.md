@@ -7,10 +7,6 @@ This deploys the module with the feed private endpoint and public access disable
 terraform {
   required_version = ">= 1.0.0"
   required_providers {
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = ">= 2.44.1, < 3.0.0"
-    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = ">= 3.7.0, < 4.0.0"
@@ -159,8 +155,6 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.0.0)
 
-- <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) (>= 2.44.1, < 3.0.0)
-
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0.0)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.6.0, <4.0.0)
@@ -193,14 +187,6 @@ No required inputs.
 ## Optional Inputs
 
 The following input variables are optional (have default values):
-
-### <a name="input_appgroupname"></a> [appgroupname](#input\_appgroupname)
-
-Description: The name of the application group
-
-Type: `string`
-
-Default: `"appgroup2"`
 
 ### <a name="input_description"></a> [description](#input\_description)
 
@@ -243,14 +229,6 @@ Description: Whether or not public network access is enabled for the AVD Workspa
 Type: `bool`
 
 Default: `false`
-
-### <a name="input_type"></a> [type](#input\_type)
-
-Description: The type of the application group
-
-Type: `string`
-
-Default: `"Desktop"`
 
 ### <a name="input_user_group_name"></a> [user\_group\_name](#input\_user\_group\_name)
 

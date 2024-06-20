@@ -1,9 +1,3 @@
-variable "appgroupname" {
-  type        = string
-  default     = "appgroup2"
-  description = "The name of the application group"
-}
-
 variable "description" {
   type        = string
   default     = "AVD Workspace with private endpoint"
@@ -41,12 +35,6 @@ variable "public_network_access_enabled" {
   type        = bool
   default     = false
   description = "Whether or not public network access is enabled for the AVD Workspace."
-}
-
-variable "type" {
-  type        = string
-  default     = "Desktop"
-  description = "The type of the application group"
 }
 
 variable "user_group_name" {
