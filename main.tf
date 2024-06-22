@@ -4,7 +4,7 @@ resource "azurerm_virtual_desktop_workspace" "this" {
   name                          = var.name
   resource_group_name           = var.resource_group_name
   description                   = var.description
-  friendly_name                 = var.name
+  friendly_name                 = var.friendly_name != null ? var.friendly_name : var.name
   public_network_access_enabled = var.public_network_access_enabled
   tags                          = var.tags
 }

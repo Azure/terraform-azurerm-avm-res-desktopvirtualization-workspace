@@ -133,6 +133,14 @@ Type: `string`
 
 Default: `"workspace-3"`
 
+### <a name="input_friendly_name"></a> [name](#input\_friendly_name)
+
+Description: The friendly name of the AVD Workspace. If this variable is not set, the [name](#input\_name) variable will be used as the friendly name.
+
+Type: `string`
+
+Default: `null`
+
 ### <a name="input_private_endpoints"></a> [private\_endpoints](#input\_private\_endpoints)
 
 Description: A map of private endpoints to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.

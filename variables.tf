@@ -101,6 +101,17 @@ variable "name" {
   }
 }
 
+variable "friendly_name" {
+  type        = string
+  default     = null
+  description = "The friendly name of the AVD Workspace. It can be null or a string between 1 and 64 characters long."
+
+  validation {
+    condition     = var.friendly_name == null || can(regex("^.{1,64}$", var.friendly_name))
+    error_message = "The friendly name must be null or a string between 1 and 64 characters long."
+  }
+}
+
 variable "private_endpoints" {
   type = map(object({
     name = optional(string, null)
