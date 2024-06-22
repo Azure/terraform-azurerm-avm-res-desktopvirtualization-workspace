@@ -107,6 +107,14 @@ Type: `bool`
 
 Default: `true`
 
+### <a name="input_friendly_name"></a> [friendly\_name](#input\_friendly\_name)
+
+Description: The friendly name of the AVD Workspace. It can be null or a string between 1 and 64 characters long.
+
+Type: `string`
+
+Default: `null`
+
 ### <a name="input_lock"></a> [lock](#input\_lock)
 
 Description:   Controls the Resource Lock configuration for this resource. The following properties can be specified:
@@ -132,14 +140,6 @@ Description: The name of the AVD Workspace.
 Type: `string`
 
 Default: `"workspace-3"`
-
-### <a name="input_friendly_name"></a> [name](#input\_friendly_name)
-
-Description: The friendly name of the AVD Workspace. If this variable is not set, the [name](#input\_name) variable will be used as the friendly name.
-
-Type: `string`
-
-Default: `null`
 
 ### <a name="input_private_endpoints"></a> [private\_endpoints](#input\_private\_endpoints)
 

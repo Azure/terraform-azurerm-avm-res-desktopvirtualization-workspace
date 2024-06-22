@@ -70,6 +70,17 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
+variable "friendly_name" {
+  type        = string
+  default     = null
+  description = "The friendly name of the AVD Workspace. It can be null or a string between 1 and 64 characters long."
+
+  validation {
+    condition     = var.friendly_name == null || can(regex("^.{1,64}$", var.friendly_name))
+    error_message = "The friendly name must be null or a string between 1 and 64 characters long."
+  }
+}
+
 # tflint-ignore: terraform_unused_declarations
 variable "lock" {
   type = object({
@@ -98,17 +109,6 @@ variable "name" {
   validation {
     condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
     error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
-  }
-}
-
-variable "friendly_name" {
-  type        = string
-  default     = null
-  description = "The friendly name of the AVD Workspace. It can be null or a string between 1 and 64 characters long."
-
-  validation {
-    condition     = var.friendly_name == null || can(regex("^.{1,64}$", var.friendly_name))
-    error_message = "The friendly name must be null or a string between 1 and 64 characters long."
   }
 }
 
