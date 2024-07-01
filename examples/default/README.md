@@ -96,17 +96,20 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_location            = azurerm_resource_group.this.location
+  virtual_desktop_application_group_friendly_name       = var.name
   user_group_name                                       = var.user_group_name
 }
 
 # This is the module call
 module "workspace" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  name                = var.name
-  description         = var.description
+  source                                        = "../../"
+  enable_telemetry                              = var.enable_telemetry
+  resource_group_name                           = azurerm_resource_group.this.name
+  virtual_desktop_workspace_location            = azurerm_resource_group.this.location
+  virtual_desktop_workspace_description         = var.description
+  virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_workspace_name                = var.virtual_desktop_workspace_name
+  virtual_desktop_workspace_friendly_name       = var.virtual_desktop_workspace_friendly_name
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
@@ -164,7 +167,7 @@ Description: The name of the application group
 
 Type: `string`
 
-Default: `"appgroup-1"`
+Default: `"vdag-avd-001"`
 
 ### <a name="input_description"></a> [description](#input\_description)
 
@@ -190,15 +193,15 @@ Description: The name of the AVD Host Pool to assign the application group to.
 
 Type: `string`
 
-Default: `"avdhostpool"`
+Default: `"vdpool-avd-001"`
 
 ### <a name="input_name"></a> [name](#input\_name)
 
-Description: The name of the AVD Workspace.
+Description: The name of the AVD Application Group friendly name.
 
 Type: `string`
 
-Default: `"workspace-1"`
+Default: `"friendlyname"`
 
 ### <a name="input_type"></a> [type](#input\_type)
 
@@ -215,6 +218,22 @@ Description: Microsoft Entra ID User Group for AVD users
 Type: `string`
 
 Default: `"avdusergroup"`
+
+### <a name="input_virtual_desktop_workspace_friendly_name"></a> [virtual\_desktop\_workspace\_friendly\_name](#input\_virtual\_desktop\_workspace\_friendly\_name)
+
+Description: A friendly name for the Virtual Desktop Workspace. It can be null or a string between 1 and 64 characters long.
+
+Type: `string`
+
+Default: `"Workspace friendly name"`
+
+### <a name="input_virtual_desktop_workspace_name"></a> [virtual\_desktop\_workspace\_name](#input\_virtual\_desktop\_workspace\_name)
+
+Description: (Required) The name of the Virtual Desktop Workspace. Changing this forces a new resource to be created.
+
+Type: `string`
+
+Default: `"vdws-avd-001"`
 
 ## Outputs
 

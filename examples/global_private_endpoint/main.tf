@@ -62,14 +62,16 @@ resource "azurerm_private_dns_zone" "this" {
 
 # This is the module call
 module "workspace" {
-  source                        = "../../"
-  enable_telemetry              = var.enable_telemetry
-  resource_group_name           = azurerm_resource_group.this.name
-  location                      = azurerm_resource_group.this.location
-  name                          = var.name
-  description                   = var.description
-  public_network_access_enabled = var.public_network_access_enabled
-  subresource_names             = ["global"]
+  source                                                  = "../../"
+  enable_telemetry                                        = var.enable_telemetry
+  resource_group_name                                     = azurerm_resource_group.this.name
+  virtual_desktop_workspace_location                      = azurerm_resource_group.this.location
+  virtual_desktop_workspace_description                   = var.description
+  virtual_desktop_workspace_resource_group_name           = azurerm_resource_group.this.name
+  virtual_desktop_workspace_name                          = var.virtual_desktop_workspace_name
+  virtual_desktop_workspace_friendly_name                 = var.virtual_desktop_workspace_friendly_name
+  virtual_desktop_workspace_public_network_access_enabled = var.public_network_access_enabled
+  subresource_names                                       = ["global"]
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"

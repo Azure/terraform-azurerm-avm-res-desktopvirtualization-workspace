@@ -30,3 +30,21 @@ variable "public_network_access_enabled" {
   default     = false
   description = "Whether or not public network access is enabled for the AVD Workspace."
 }
+
+variable "virtual_desktop_workspace_friendly_name" {
+  type        = string
+  default     = "Workspace friendly name"
+  description = "A friendly name for the Virtual Desktop Workspace. It can be null or a string between 1 and 64 characters long."
+
+  validation {
+    condition     = var.virtual_desktop_workspace_friendly_name == null || can(regex("^.{1,64}$", var.virtual_desktop_workspace_friendly_name))
+    error_message = "The friendly name must be null or a string between 1 and 64 characters long."
+  }
+}
+
+variable "virtual_desktop_workspace_name" {
+  type        = string
+  default     = "vdws-avd-001"
+  description = "(Required) The name of the Virtual Desktop Workspace. Changing this forces a new resource to be created."
+  nullable    = false
+}
