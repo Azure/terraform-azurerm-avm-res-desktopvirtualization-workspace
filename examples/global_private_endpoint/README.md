@@ -152,14 +152,6 @@ Type: `bool`
 
 Default: `true`
 
-### <a name="input_name"></a> [name](#input\_name)
-
-Description: The name of the AVD Workspace.
-
-Type: `string`
-
-Default: `"globalprivate-empty"`
-
 ### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
 
 Description: Whether or not public network access is enabled for the AVD Workspace.
