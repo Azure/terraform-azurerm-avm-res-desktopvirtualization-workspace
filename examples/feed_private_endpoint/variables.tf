@@ -20,12 +20,6 @@ variable "host_pool" {
   description = "The name of the AVD Host Pool to assign the application group to."
 }
 
-variable "name" {
-  type        = string
-  default     = "friendlyname"
-  description = "The name of the AVD Application Group friendly name."
-}
-
 variable "public_network_access_enabled" {
   type        = bool
   default     = false

@@ -217,14 +217,6 @@ Type: `string`
 
 Default: `"avdhostpool2"`
 
-### <a name="input_name"></a> [name](#input\_name)
-
-Description: The name of the AVD Application Group friendly name.
-
-Type: `string`
-
-Default: `"friendlyname"`
-
 ### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
 
 Description: Whether or not public network access is enabled for the AVD Workspace.
