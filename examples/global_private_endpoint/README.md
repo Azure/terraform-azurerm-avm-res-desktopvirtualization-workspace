@@ -69,14 +69,16 @@ resource "azurerm_private_dns_zone" "this" {
 
 # This is the module call
 module "workspace" {
-  source                        = "../../"
-  enable_telemetry              = var.enable_telemetry
-  resource_group_name           = azurerm_resource_group.this.name
-  location                      = azurerm_resource_group.this.location
-  name                          = var.name
-  description                   = var.description
-  public_network_access_enabled = var.public_network_access_enabled
-  subresource_names             = ["global"]
+  source                                                  = "../../"
+  enable_telemetry                                        = var.enable_telemetry
+  resource_group_name                                     = azurerm_resource_group.this.name
+  virtual_desktop_workspace_location                      = azurerm_resource_group.this.location
+  virtual_desktop_workspace_description                   = var.description
+  virtual_desktop_workspace_resource_group_name           = azurerm_resource_group.this.name
+  virtual_desktop_workspace_name                          = var.virtual_desktop_workspace_name
+  virtual_desktop_workspace_friendly_name                 = var.virtual_desktop_workspace_friendly_name
+  virtual_desktop_workspace_public_network_access_enabled = var.public_network_access_enabled
+  subresource_names                                       = ["global"]
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
@@ -150,14 +152,6 @@ Type: `bool`
 
 Default: `true`
 
-### <a name="input_name"></a> [name](#input\_name)
-
-Description: The name of the AVD Workspace.
-
-Type: `string`
-
-Default: `"globalprivate-empty"`
-
 ### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
 
 Description: Whether or not public network access is enabled for the AVD Workspace.
@@ -165,6 +159,22 @@ Description: Whether or not public network access is enabled for the AVD Workspa
 Type: `bool`
 
 Default: `false`
+
+### <a name="input_virtual_desktop_workspace_friendly_name"></a> [virtual\_desktop\_workspace\_friendly\_name](#input\_virtual\_desktop\_workspace\_friendly\_name)
+
+Description: A friendly name for the Virtual Desktop Workspace. It can be null or a string between 1 and 64 characters long.
+
+Type: `string`
+
+Default: `"Workspace friendly name"`
+
+### <a name="input_virtual_desktop_workspace_name"></a> [virtual\_desktop\_workspace\_name](#input\_virtual\_desktop\_workspace\_name)
+
+Description: (Required) The name of the Virtual Desktop Workspace. Changing this forces a new resource to be created.
+
+Type: `string`
+
+Default: `"vdws-avd-001"`
 
 ## Outputs
 

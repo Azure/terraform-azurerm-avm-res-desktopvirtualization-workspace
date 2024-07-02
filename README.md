@@ -41,21 +41,27 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_description"></a> [description](#input\_description)
-
-Description: The description of the AVD Workspace.
-
-Type: `string`
-
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: The Azure location where the resources will be deployed.
-
-Type: `string`
-
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
 Description: The name of the resource group where the resources will be deployed.
+
+Type: `string`
+
+### <a name="input_virtual_desktop_workspace_location"></a> [virtual\_desktop\_workspace\_location](#input\_virtual\_desktop\_workspace\_location)
+
+Description: (Required) The location/region where the Virtual Desktop Workspace is located. Changing the location/region forces a new resource to be created.
+
+Type: `string`
+
+### <a name="input_virtual_desktop_workspace_name"></a> [virtual\_desktop\_workspace\_name](#input\_virtual\_desktop\_workspace\_name)
+
+Description: (Required) The name of the Virtual Desktop Workspace. Changing this forces a new resource to be created.
+
+Type: `string`
+
+### <a name="input_virtual_desktop_workspace_resource_group_name"></a> [virtual\_desktop\_workspace\_resource\_group\_name](#input\_virtual\_desktop\_workspace\_resource\_group\_name)
+
+Description: (Required) The name of the resource group in which to create the Virtual Desktop Workspace. Changing this forces a new resource to be created.
 
 Type: `string`
 
@@ -125,14 +131,6 @@ object({
 
 Default: `null`
 
-### <a name="input_name"></a> [name](#input\_name)
-
-Description: The name of the AVD Workspace.
-
-Type: `string`
-
-Default: `"workspace-3"`
-
 ### <a name="input_private_endpoints"></a> [private\_endpoints](#input\_private\_endpoints)
 
 Description: A map of private endpoints to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
@@ -186,14 +184,6 @@ map(object({
 ```
 
 Default: `{}`
-
-### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
-
-Description: Whether or not public network access is enabled for the AVD Workspace.
-
-Type: `bool`
-
-Default: `true`
 
 ### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
 
@@ -256,6 +246,58 @@ Description: Default prefix for generated tracing tags
 Type: `string`
 
 Default: `"avm_"`
+
+### <a name="input_virtual_desktop_workspace_description"></a> [virtual\_desktop\_workspace\_description](#input\_virtual\_desktop\_workspace\_description)
+
+Description: (Optional) A description for the Virtual Desktop Workspace.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_workspace_friendly_name"></a> [virtual\_desktop\_workspace\_friendly\_name](#input\_virtual\_desktop\_workspace\_friendly\_name)
+
+Description: (Optional) A friendly name for the Virtual Desktop Workspace. It can be null or a string between 1 and 64 characters long.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_workspace_public_network_access_enabled"></a> [virtual\_desktop\_workspace\_public\_network\_access\_enabled](#input\_virtual\_desktop\_workspace\_public\_network\_access\_enabled)
+
+Description: (Optional) Whether public network access is allowed for this Virtual Desktop Workspace. Defaults to `true`.
+
+Type: `bool`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_workspace_tags"></a> [virtual\_desktop\_workspace\_tags](#input\_virtual\_desktop\_workspace\_tags)
+
+Description: (Optional) A mapping of tags to assign to the resource.
+
+Type: `map(string)`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_workspace_timeouts"></a> [virtual\_desktop\_workspace\_timeouts](#input\_virtual\_desktop\_workspace\_timeouts)
+
+Description: - `create` - (Defaults to 60 minutes) Used when creating the Virtual Desktop Workspace.
+- `delete` - (Defaults to 60 minutes) Used when deleting the Virtual Desktop Workspace.
+- `read` - (Defaults to 5 minutes) Used when retrieving the Virtual Desktop Workspace.
+- `update` - (Defaults to 60 minutes) Used when updating the Virtual Desktop Workspace.
+
+Type:
+
+```hcl
+object({
+    create = optional(string)
+    delete = optional(string)
+    read   = optional(string)
+    update = optional(string)
+  })
+```
+
+Default: `null`
 
 ## Outputs
 
