@@ -87,17 +87,20 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_location            = azurerm_resource_group.this.location
+  virtual_desktop_application_group_friendly_name       = var.name
   user_group_name                                       = var.user_group_name
 }
 
 # This is the module call
 module "workspace" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  name                = var.name
-  description         = var.description
+  source                                        = "../../"
+  enable_telemetry                              = var.enable_telemetry
+  resource_group_name                           = azurerm_resource_group.this.name
+  virtual_desktop_workspace_location            = azurerm_resource_group.this.location
+  virtual_desktop_workspace_description         = var.description
+  virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_workspace_name                = var.virtual_desktop_workspace_name
+  virtual_desktop_workspace_friendly_name       = var.virtual_desktop_workspace_friendly_name
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"

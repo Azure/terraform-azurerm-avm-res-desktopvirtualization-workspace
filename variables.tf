@@ -15,6 +15,24 @@ variable "resource_group_name" {
   description = "The name of the resource group where the resources will be deployed."
 }
 
+variable "virtual_desktop_workspace_location" {
+  type        = string
+  description = "(Required) The location/region where the Virtual Desktop Workspace is located. Changing the location/region forces a new resource to be created."
+  nullable    = false
+}
+
+variable "virtual_desktop_workspace_name" {
+  type        = string
+  description = "(Required) The name of the Virtual Desktop Workspace. Changing this forces a new resource to be created."
+  nullable    = false
+}
+
+variable "virtual_desktop_workspace_resource_group_name" {
+  type        = string
+  description = "(Required) The name of the resource group in which to create the Virtual Desktop Workspace. Changing this forces a new resource to be created."
+  nullable    = false
+}
+
 variable "diagnostic_settings" {
   type = map(object({
     name                                     = optional(string, null)
@@ -71,6 +89,7 @@ DESCRIPTION
 }
 
 # tflint-ignore: terraform_unused_declarations
+# tflint-ignore: terraform_unused_declarations
 variable "lock" {
   type = object({
     kind = string
@@ -90,17 +109,6 @@ variable "lock" {
   }
 }
 
-variable "name" {
-  type        = string
-  default     = "workspace-3"
-  description = "The name of the AVD Workspace."
-
-  validation {
-    condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
-    error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
-  }
-}
-
 variable "private_endpoints" {
   type = map(object({
     name = optional(string, null)
@@ -112,6 +120,7 @@ variable "private_endpoints" {
       condition                              = optional(string, null)
       condition_version                      = optional(string, null)
       delegated_managed_identity_resource_id = optional(string, null)
+      principal_type                         = optional(string, null)
       principal_type                         = optional(string, null)
     })), {})
     lock = optional(object({
@@ -169,6 +178,7 @@ variable "role_assignments" {
     condition_version                      = optional(string, null)
     delegated_managed_identity_resource_id = optional(string, null)
     principal_type                         = optional(string, null)
+    principal_type                         = optional(string, null)
   }))
   default     = {}
   description = <<DESCRIPTION
@@ -212,4 +222,49 @@ variable "tracing_tags_prefix" {
   default     = "avm_"
   description = "Default prefix for generated tracing tags"
   nullable    = false
+}
+
+variable "virtual_desktop_workspace_description" {
+  type        = string
+  default     = null
+  description = "(Optional) A description for the Virtual Desktop Workspace."
+}
+
+variable "virtual_desktop_workspace_friendly_name" {
+  type        = string
+  default     = null
+  description = "(Optional) A friendly name for the Virtual Desktop Workspace. It can be null or a string between 1 and 64 characters long."
+
+  validation {
+    condition     = var.virtual_desktop_workspace_friendly_name == null || can(regex("^.{1,64}$", var.virtual_desktop_workspace_friendly_name))
+    error_message = "The friendly name must be null or a string between 1 and 64 characters long."
+  }
+}
+
+variable "virtual_desktop_workspace_public_network_access_enabled" {
+  type        = bool
+  default     = null
+  description = "(Optional) Whether public network access is allowed for this Virtual Desktop Workspace. Defaults to `true`."
+}
+
+variable "virtual_desktop_workspace_tags" {
+  type        = map(string)
+  default     = null
+  description = "(Optional) A mapping of tags to assign to the resource."
+}
+
+variable "virtual_desktop_workspace_timeouts" {
+  type = object({
+    create = optional(string)
+    delete = optional(string)
+    read   = optional(string)
+    update = optional(string)
+  })
+  default     = null
+  description = <<-EOT
+ - `create` - (Defaults to 60 minutes) Used when creating the Virtual Desktop Workspace.
+ - `delete` - (Defaults to 60 minutes) Used when deleting the Virtual Desktop Workspace.
+ - `read` - (Defaults to 5 minutes) Used when retrieving the Virtual Desktop Workspace.
+ - `update` - (Defaults to 60 minutes) Used when updating the Virtual Desktop Workspace.
+EOT
 }

@@ -1,19 +1,29 @@
 # Create AVD workspace
 resource "azurerm_virtual_desktop_workspace" "this" {
-  location                      = var.location
-  name                          = var.name
-  resource_group_name           = var.resource_group_name
-  description                   = var.description
-  friendly_name                 = var.name
-  public_network_access_enabled = var.public_network_access_enabled
-  tags                          = var.tags
+  location                      = var.virtual_desktop_workspace_location
+  name                          = var.virtual_desktop_workspace_name
+  resource_group_name           = var.virtual_desktop_workspace_resource_group_name
+  description                   = var.virtual_desktop_workspace_description
+  friendly_name                 = var.virtual_desktop_workspace_friendly_name != null ? var.virtual_desktop_workspace_friendly_name : var.virtual_desktop_workspace_name
+  public_network_access_enabled = var.virtual_desktop_workspace_public_network_access_enabled
+  tags                          = var.virtual_desktop_workspace_tags
+
+  dynamic "timeouts" {
+    for_each = var.virtual_desktop_workspace_timeouts == null ? [] : [var.virtual_desktop_workspace_timeouts]
+    content {
+      create = timeouts.value.create
+      delete = timeouts.value.delete
+      read   = timeouts.value.read
+      update = timeouts.value.update
+    }
+  }
 }
 
 # Create Diagnostic Settings for AVD workspace
 resource "azurerm_monitor_diagnostic_setting" "this" {
   for_each = var.diagnostic_settings
 
-  name                           = each.value.name != null ? each.value.name : "diag-${var.name}"
+  name                           = each.value.name != null ? each.value.name : "diag-${var.virtual_desktop_workspace_name}"
   target_resource_id             = azurerm_virtual_desktop_workspace.this.id
   eventhub_authorization_rule_id = each.value.event_hub_authorization_rule_resource_id
   eventhub_name                  = each.value.event_hub_name
