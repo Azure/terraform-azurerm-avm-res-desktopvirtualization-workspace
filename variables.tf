@@ -78,6 +78,7 @@ DESCRIPTION
 }
 
 # tflint-ignore: terraform_unused_declarations
+# tflint-ignore: terraform_unused_declarations
 variable "lock" {
   type = object({
     kind = string
