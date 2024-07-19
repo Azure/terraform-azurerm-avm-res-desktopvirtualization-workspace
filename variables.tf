@@ -1,14 +1,3 @@
-variable "description" {
-  type        = string
-  description = "The description of the AVD Workspace."
-}
-
-variable "location" {
-  type        = string
-  description = "The Azure location where the resources will be deployed."
-  nullable    = false
-}
-
 # Define variables for the AVD Host Pool deployment
 variable "resource_group_name" {
   type        = string
@@ -121,7 +110,6 @@ variable "private_endpoints" {
       condition_version                      = optional(string, null)
       delegated_managed_identity_resource_id = optional(string, null)
       principal_type                         = optional(string, null)
-      principal_type                         = optional(string, null)
     })), {})
     lock = optional(object({
       name = optional(string, null)
@@ -161,12 +149,6 @@ DESCRIPTION
   nullable    = false
 }
 
-variable "public_network_access_enabled" {
-  type        = bool
-  default     = true
-  description = "Whether or not public network access is enabled for the AVD Workspace."
-}
-
 # tflint-ignore: terraform_unused_declarations
 variable "role_assignments" {
   type = map(object({
@@ -177,7 +159,6 @@ variable "role_assignments" {
     condition                              = optional(string, null)
     condition_version                      = optional(string, null)
     delegated_managed_identity_resource_id = optional(string, null)
-    principal_type                         = optional(string, null)
     principal_type                         = optional(string, null)
   }))
   default     = {}
