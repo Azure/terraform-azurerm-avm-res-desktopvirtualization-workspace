@@ -148,70 +148,37 @@ Type:
 
 ```hcl
 map(object({
-    name = optional(string, null)
-    role_assignments = optional(map(object({
-      role_definition_id_or_name             = string
-      principal_id                           = string
-      description                            = optional(string, null)
-      skip_service_principal_aad_check       = optional(bool, false)
-      condition                              = optional(string, null)
-      condition_version                      = optional(string, null)
-      delegated_managed_identity_resource_id = optional(string, null)
-      principal_type                         = optional(string, null)
-    })), {})
-    lock = optional(object({
-      name = optional(string, null)
-      kind = string
-    }), null)
+    name                                    = string
     tags                                    = optional(map(string), null)
     subnet_resource_id                      = string
     private_dns_zone_group_name             = optional(string, "default")
-    private_dns_zone_resource_ids           = optional(set(string), [])
+    private_dns_zone_ids                    = optional(list(string), [])
     application_security_group_associations = optional(map(string), {})
     private_service_connection_name         = optional(string, null)
+    subresource_name                        = optional(list(string), [])
     network_interface_name                  = optional(string, null)
     location                                = optional(string, null)
     resource_group_name                     = optional(string, null)
     ip_configurations = optional(map(object({
       name               = string
       private_ip_address = string
+      member_name        = optional(string, null)
+      subresource_name   = string
     })), {})
   }))
 ```
 
 Default: `{}`
 
-### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
+### <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled)
 
-Description:   A map of role assignments to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+Description: (Optional) Whether public network access is allowed for this Virtual Desktop Workspace. Defaults to `true`.
 
-  - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
-  - `principal_id` - The ID of the principal to assign the role to.
-  - `description` - The description of the role assignment.
-  - `skip_service_principal_aad_check` - If set to true, skips the Azure Active Directory check for the service principal in the tenant. Defaults to false.
-  - `condition` - The condition which will be used to scope the role assignment.
-  - `condition_version` - The version of the condition syntax. Leave as `null` if you are not using a condition, if you are then valid values are '2.0'.
+Type: `bool`
 
-  > Note: only set `skip_service_principal_aad_check` to true if you are assigning a role to a service principal.
+Default: `false`
 
-Type:
-
-```hcl
-map(object({
-    role_definition_id_or_name             = string
-    principal_id                           = string
-    description                            = optional(string, null)
-    skip_service_principal_aad_check       = optional(bool, false)
-    condition                              = optional(string, null)
-    condition_version                      = optional(string, null)
-    delegated_managed_identity_resource_id = optional(string, null)
-    principal_type                         = optional(string, null)
-  }))
-```
-
-Default: `{}`
-
-### <a name="input_subresource_names"></a> [subresource\_names](#input\_subresource\_names)
+### <a name="input_subresource_name"></a> [subresource\_name](#input\_subresource\_name)
 
 Description: The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'.
 
@@ -256,14 +223,6 @@ Default: `null`
 Description: (Optional) A friendly name for the Virtual Desktop Workspace. It can be null or a string between 1 and 64 characters long.
 
 Type: `string`
-
-Default: `null`
-
-### <a name="input_virtual_desktop_workspace_public_network_access_enabled"></a> [virtual\_desktop\_workspace\_public\_network\_access\_enabled](#input\_virtual\_desktop\_workspace\_public\_network\_access\_enabled)
-
-Description: (Optional) Whether public network access is allowed for this Virtual Desktop Workspace. Defaults to `true`.
-
-Type: `bool`
 
 Default: `null`
 

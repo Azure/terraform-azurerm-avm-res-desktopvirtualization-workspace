@@ -14,10 +14,10 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-variable "public_network_access_enabled" {
-  type        = bool
-  default     = false
-  description = "Whether or not public network access is enabled for the AVD Workspace."
+variable "tags" {
+  type        = map(string)
+  default     = { "Owner.Email" : "name@microsoft.com" }
+  description = "A map of tags to add to all resources"
 }
 
 variable "virtual_desktop_workspace_friendly_name" {
