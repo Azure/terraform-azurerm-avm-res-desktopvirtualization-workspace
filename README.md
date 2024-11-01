@@ -169,7 +169,6 @@ map(object({
     }), null)
     tags                                    = optional(map(string), null)
     subnet_resource_id                      = string
-    subresource_name                        = string
     private_dns_zone_group_name             = optional(string, "default")
     private_dns_zone_resource_ids           = optional(set(string), [])
     application_security_group_associations = optional(map(string), {})
@@ -177,6 +176,7 @@ map(object({
     network_interface_name                  = optional(string, null)
     location                                = optional(string, null)
     resource_group_name                     = optional(string, null)
+    subresource_names                       = optional(list(string))
     ip_configurations = optional(map(object({
       name               = string
       private_ip_address = string
