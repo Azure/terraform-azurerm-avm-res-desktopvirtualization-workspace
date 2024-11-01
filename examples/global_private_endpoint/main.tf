@@ -13,7 +13,11 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 # This ensures we have unique CAF compliant names for our resources.
@@ -33,6 +37,8 @@ resource "azurerm_resource_group" "this" {
   location = local.azure_regions[random_integer.region_index.result]
   name     = module.naming.resource_group.name_unique
 }
+
+# This is required for resource modules
 
 resource "azurerm_log_analytics_workspace" "this" {
   location            = azurerm_resource_group.this.location
@@ -60,29 +66,41 @@ resource "azurerm_private_dns_zone" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
+resource "azurerm_private_dns_zone_virtual_network_link" "this" {
+  name                  = "global-link"
+  private_dns_zone_name = azurerm_private_dns_zone.this.name
+  resource_group_name   = azurerm_resource_group.this.name
+  virtual_network_id    = azurerm_virtual_network.this.id
+}
+
 # This is the module call
 module "workspace" {
-  source                                                  = "../../"
-  enable_telemetry                                        = var.enable_telemetry
-  resource_group_name                                     = azurerm_resource_group.this.name
-  virtual_desktop_workspace_location                      = azurerm_resource_group.this.location
-  virtual_desktop_workspace_description                   = var.description
-  virtual_desktop_workspace_resource_group_name           = azurerm_resource_group.this.name
-  virtual_desktop_workspace_name                          = var.virtual_desktop_workspace_name
-  virtual_desktop_workspace_friendly_name                 = var.virtual_desktop_workspace_friendly_name
-  virtual_desktop_workspace_public_network_access_enabled = var.public_network_access_enabled
-  subresource_names                                       = ["global"]
+  source                                        = "../../"
+  enable_telemetry                              = var.enable_telemetry
+  resource_group_name                           = azurerm_resource_group.this.name
+  virtual_desktop_workspace_location            = azurerm_resource_group.this.location
+  virtual_desktop_workspace_description         = var.description
+  virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_workspace_name                = var.virtual_desktop_workspace_name
+  virtual_desktop_workspace_friendly_name       = var.virtual_desktop_workspace_friendly_name
+  tags                                          = var.tags
+  public_network_access_enabled                 = false
+  private_endpoints = {
+    primary = {
+      name                            = "pe-${var.virtual_desktop_workspace_name}"
+      private_service_connection_name = "psc-${var.virtual_desktop_workspace_name}"
+      network_interface_name          = "nic-pe-${var.virtual_desktop_workspace_name}"
+      private_connection_resource_id  = module.workspace.resource.id
+      subresource_name                = ["global"]
+      private_dns_zone_ids            = [azurerm_private_dns_zone.this.id]
+      subnet_resource_id              = azurerm_subnet.this.id
+      subresource_names               = ["global"]
+    }
+  }
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
-  private_endpoints = {
-    primary = {
-      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
-      subnet_resource_id            = azurerm_subnet.this.id
-    }
-  }
 }
-

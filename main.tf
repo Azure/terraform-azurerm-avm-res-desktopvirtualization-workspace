@@ -5,7 +5,7 @@ resource "azurerm_virtual_desktop_workspace" "this" {
   resource_group_name           = var.virtual_desktop_workspace_resource_group_name
   description                   = var.virtual_desktop_workspace_description
   friendly_name                 = var.virtual_desktop_workspace_friendly_name != null ? var.virtual_desktop_workspace_friendly_name : var.virtual_desktop_workspace_name
-  public_network_access_enabled = var.virtual_desktop_workspace_public_network_access_enabled
+  public_network_access_enabled = var.public_network_access_enabled
   tags                          = var.virtual_desktop_workspace_tags
 
   dynamic "timeouts" {

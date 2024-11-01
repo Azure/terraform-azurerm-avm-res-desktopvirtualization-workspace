@@ -20,10 +20,10 @@ variable "host_pool" {
   description = "The name of the AVD Host Pool to assign the application group to."
 }
 
-variable "public_network_access_enabled" {
-  type        = bool
-  default     = false
-  description = "Whether or not public network access is enabled for the AVD Workspace."
+variable "tags" {
+  type        = map(string)
+  default     = { "Owner.Email" : "name@microsoft.com" }
+  description = "A map of tags to add to all resources"
 }
 
 variable "user_group_name" {

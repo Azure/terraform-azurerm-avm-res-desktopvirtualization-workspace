@@ -12,7 +12,7 @@ resource "azurerm_private_endpoint" "this" {
     is_manual_connection           = false
     name                           = each.value.private_service_connection_name != null ? each.value.private_service_connection_name : "pse-${var.virtual_desktop_workspace_name}"
     private_connection_resource_id = azurerm_virtual_desktop_workspace.this.id
-    subresource_names              = var.subresource_names
+    subresource_names              = each.value.subresource_name != null ? each.value.subresource_name : var.subresource_name
   }
   dynamic "ip_configuration" {
     for_each = each.value.ip_configurations
@@ -20,16 +20,16 @@ resource "azurerm_private_endpoint" "this" {
     content {
       name               = ip_configuration.value.name
       private_ip_address = ip_configuration.value.private_ip_address
-      member_name        = ip_configuration.value.member_name
-      subresource_name   = ip_configuration.value.subresource_name
+      member_name        = "default"
+      subresource_name   = each.value.subresource_name
     }
   }
   dynamic "private_dns_zone_group" {
-    for_each = length(each.value.private_dns_zone_resource_ids) > 0 ? ["this"] : []
+    for_each = length(each.value.private_dns_zone_ids) > 0 ? ["this"] : []
 
     content {
       name                 = each.value.private_dns_zone_group_name
-      private_dns_zone_ids = each.value.private_dns_zone_resource_ids
+      private_dns_zone_ids = each.value.private_dns_zone_ids
     }
   }
 }
