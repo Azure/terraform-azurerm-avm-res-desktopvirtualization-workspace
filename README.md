@@ -130,7 +130,6 @@ Default: `null`
 ### <a name="input_private_endpoints"></a> [private\_endpoints](#input\_private\_endpoints)
 
 Description: A map of private endpoints to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
-
 - `name` - (Optional) The name of the private endpoint. One will be generated if not set.
 - `role_assignments` - (Optional) A map of role assignments to create on the private endpoint. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time. See `var.role_assignments` for more information.
 - `lock` - (Optional) The lock level to apply to the private endpoint. Default is `None`. Possible values are `None`, `CanNotDelete`, and `ReadOnly`.
@@ -176,7 +175,6 @@ map(object({
     network_interface_name                  = optional(string, null)
     location                                = optional(string, null)
     resource_group_name                     = optional(string, null)
-    subresource_names                       = optional(list(string))
     ip_configurations = optional(map(object({
       name               = string
       private_ip_address = string
