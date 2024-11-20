@@ -163,8 +163,8 @@ map(object({
       principal_type                         = optional(string, null)
     })), {})
     lock = optional(object({
-      kind = string
       name = optional(string, null)
+      kind = string
     }), null)
     tags                                    = optional(map(string), null)
     subnet_resource_id                      = string
@@ -190,9 +190,9 @@ Description: (Optional) Whether public network access is allowed for this Virtua
 
 Type: `bool`
 
-Default: `false`
+Default: `true`
 
-### <a name="input_subresource_name"></a> [subresource\_name](#input\_subresource\_name)
+### <a name="input_subresource_names"></a> [subresource\_names](#input\_subresource\_names)
 
 Description: The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'.
 

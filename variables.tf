@@ -111,8 +111,8 @@ variable "private_endpoints" {
       principal_type                         = optional(string, null)
     })), {})
     lock = optional(object({
-      kind = string
       name = optional(string, null)
+      kind = string
     }), null)
     tags                                    = optional(map(string), null)
     subnet_resource_id                      = string
@@ -153,11 +153,11 @@ DESCRIPTION
 
 variable "public_network_access_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "(Optional) Whether public network access is allowed for this Virtual Desktop Workspace. Defaults to `true`."
 }
 
-variable "subresource_name" {
+variable "subresource_names" {
   type        = list(string)
   default     = []
   description = "The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'."
