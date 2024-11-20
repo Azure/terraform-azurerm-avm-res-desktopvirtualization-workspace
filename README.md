@@ -169,12 +169,13 @@ map(object({
     tags                                    = optional(map(string), null)
     subnet_resource_id                      = string
     private_dns_zone_group_name             = optional(string, "default")
-    private_dns_zone_resource_ids           = optional(set(string), [])
+    private_dns_zone_resource_ids           = optional(list(string), [])
     application_security_group_associations = optional(map(string), {})
     private_service_connection_name         = optional(string, null)
     network_interface_name                  = optional(string, null)
     location                                = optional(string, null)
     resource_group_name                     = optional(string, null)
+    subresource_names                       = optional(list(string), ["default"])
     ip_configurations = optional(map(object({
       name               = string
       private_ip_address = string
@@ -190,9 +191,9 @@ Description: (Optional) Whether public network access is allowed for this Virtua
 
 Type: `bool`
 
-Default: `false`
+Default: `true`
 
-### <a name="input_subresource_name"></a> [subresource\_name](#input\_subresource\_name)
+### <a name="input_subresource_names"></a> [subresource\_names](#input\_subresource\_names)
 
 Description: The names of the subresources to assosciatied with the private endpoint. The target subresource must be one of: 'feed', or 'global'.
 

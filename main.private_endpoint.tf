@@ -12,7 +12,7 @@ resource "azurerm_private_endpoint" "this" {
     is_manual_connection           = false
     name                           = each.value.private_service_connection_name != null ? each.value.private_service_connection_name : "pse-${var.virtual_desktop_workspace_name}"
     private_connection_resource_id = azurerm_virtual_desktop_workspace.this.id
-    subresource_names              = each.value.subresource_names >0 ? each.value.subresource_names : var.subresource_names
+    subresource_names              = each.value.subresource_names > 0 ? each.value.subresource_names : var.subresource_names
   }
   dynamic "ip_configuration" {
     for_each = each.value.ip_configurations
