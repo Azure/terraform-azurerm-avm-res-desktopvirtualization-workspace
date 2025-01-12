@@ -14,12 +14,6 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-variable "tags" {
-  type        = map(string)
-  default     = { "Owner.Email" : "name@microsoft.com" }
-  description = "A map of tags to add to all resources"
-}
-
 variable "virtual_desktop_workspace_friendly_name" {
   type        = string
   default     = "Workspace friendly name"

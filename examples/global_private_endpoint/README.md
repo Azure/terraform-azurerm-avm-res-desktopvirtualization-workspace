@@ -84,32 +84,31 @@ resource "azurerm_private_dns_zone_virtual_network_link" "this" {
 module "workspace" {
   source                                        = "../../"
   enable_telemetry                              = var.enable_telemetry
-  resource_group_name                           = azurerm_resource_group.this.name
   virtual_desktop_workspace_location            = azurerm_resource_group.this.location
   virtual_desktop_workspace_description         = var.description
   virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_workspace_name                = var.virtual_desktop_workspace_name
   virtual_desktop_workspace_friendly_name       = var.virtual_desktop_workspace_friendly_name
-  tags                                          = var.tags
   public_network_access_enabled                 = false
-  private_endpoints = {
-    primary = {
-      name                            = "pe-${var.virtual_desktop_workspace_name}"
-      private_service_connection_name = "psc-${var.virtual_desktop_workspace_name}"
-      network_interface_name          = "nic-pe-${var.virtual_desktop_workspace_name}"
-      private_connection_resource_id  = module.workspace.resource.id
-      subresource_name                = ["global"]
-      private_dns_zone_ids            = [azurerm_private_dns_zone.this.id]
-      subnet_resource_id              = azurerm_subnet.this.id
-      subresource_names               = ["global"]
-    }
-  }
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
+}
+
+module "avm_res_network_privateendpoint" {
+  source                         = "Azure/avm-res-network-privateendpoint/azurerm"
+  version                        = "0.1.0"
+  enable_telemetry               = var.enable_telemetry # see variables.tf
+  name                           = module.naming.private_endpoint.name_unique
+  location                       = azurerm_resource_group.this.location
+  resource_group_name            = azurerm_resource_group.this.name
+  network_interface_name         = module.naming.network_interface.name_unique
+  private_connection_resource_id = module.workspace.resource.id
+  subnet_resource_id             = azurerm_subnet.this.id
+  subresource_names              = ["global"]
 }
 ```
 
@@ -163,20 +162,6 @@ Type: `bool`
 
 Default: `true`
 
-### <a name="input_tags"></a> [tags](#input\_tags)
-
-Description: A map of tags to add to all resources
-
-Type: `map(string)`
-
-Default:
-
-```json
-{
-  "Owner.Email": "name@microsoft.com"
-}
-```
-
 ### <a name="input_virtual_desktop_workspace_friendly_name"></a> [virtual\_desktop\_workspace\_friendly\_name](#input\_virtual\_desktop\_workspace\_friendly\_name)
 
 Description: A friendly name for the Virtual Desktop Workspace. It can be null or a string between 1 and 64 characters long.
@@ -200,6 +185,12 @@ No outputs.
 ## Modules
 
 The following Modules are called:
+
+### <a name="module_avm_res_network_privateendpoint"></a> [avm\_res\_network\_privateendpoint](#module\_avm\_res\_network\_privateendpoint)
+
+Source: Azure/avm-res-network-privateendpoint/azurerm
+
+Version: 0.1.0
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 

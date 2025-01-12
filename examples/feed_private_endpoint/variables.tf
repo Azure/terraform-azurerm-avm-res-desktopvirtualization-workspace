@@ -20,12 +20,6 @@ variable "host_pool" {
   description = "The name of the AVD Host Pool to assign the application group to."
 }
 
-variable "tags" {
-  type        = map(string)
-  default     = { "Owner.Email" : "name@microsoft.com" }
-  description = "A map of tags to add to all resources"
-}
-
 variable "user_group_name" {
   type        = string
   default     = "avdusersgrp"
