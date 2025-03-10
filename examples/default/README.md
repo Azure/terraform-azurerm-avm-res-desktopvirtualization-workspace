@@ -8,7 +8,7 @@ Variables file had default values that you should change for your environment.
 
 ```hcl
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.9, < 2.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -128,7 +128,7 @@ resource "azurerm_virtual_desktop_workspace_application_group_association" "work
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0)
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71, < 5.0.0)
 
