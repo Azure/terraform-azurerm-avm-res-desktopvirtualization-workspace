@@ -6,7 +6,7 @@ Only one for all your Azure Virtual Desktop deployment. Public access is disable
 
 ```hcl
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.9, < 2.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -82,32 +82,34 @@ resource "azurerm_private_dns_zone_virtual_network_link" "this" {
 
 # This is the module call
 module "workspace" {
-  source                                        = "../../"
-  enable_telemetry                              = var.enable_telemetry
+  source = "../../"
+
   virtual_desktop_workspace_location            = azurerm_resource_group.this.location
-  virtual_desktop_workspace_description         = var.description
-  virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_workspace_name                = var.virtual_desktop_workspace_name
-  virtual_desktop_workspace_friendly_name       = var.virtual_desktop_workspace_friendly_name
-  public_network_access_enabled                 = false
+  virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
+  enable_telemetry                        = var.enable_telemetry
+  public_network_access_enabled           = false
+  virtual_desktop_workspace_description   = var.description
+  virtual_desktop_workspace_friendly_name = var.virtual_desktop_workspace_friendly_name
 }
 
 module "avm_res_network_privateendpoint" {
-  source                         = "Azure/avm-res-network-privateendpoint/azurerm"
-  version                        = "0.1.0"
-  enable_telemetry               = var.enable_telemetry # see variables.tf
-  name                           = module.naming.private_endpoint.name_unique
+  source  = "Azure/avm-res-network-privateendpoint/azurerm"
+  version = "0.1.0"
+
   location                       = azurerm_resource_group.this.location
-  resource_group_name            = azurerm_resource_group.this.name
+  name                           = module.naming.private_endpoint.name_unique
   network_interface_name         = module.naming.network_interface.name_unique
   private_connection_resource_id = module.workspace.resource.id
+  resource_group_name            = azurerm_resource_group.this.name
   subnet_resource_id             = azurerm_subnet.this.id
+  enable_telemetry               = var.enable_telemetry # see variables.tf
   subresource_names              = ["global"]
 }
 ```
@@ -117,7 +119,7 @@ module "avm_res_network_privateendpoint" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0)
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71, < 5.0.0)
 
