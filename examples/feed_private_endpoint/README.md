@@ -6,6 +6,7 @@ This deploys the module with the feed private endpoint and public access disable
 ```hcl
 terraform {
   required_version = ">= 1.9, < 2.0"
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -107,10 +108,10 @@ module "avm_res_desktopvirtualization_applicationgroup" {
 
 # A vnet is required for the private endpoint.
 resource "azurerm_virtual_network" "this" {
-  address_space       = ["192.168.0.0/24"]
   location            = azurerm_resource_group.this.location
   name                = module.naming.virtual_network.name_unique
   resource_group_name = azurerm_resource_group.this.name
+  address_space       = ["192.168.0.0/24"]
 }
 
 resource "azurerm_subnet" "this" {
