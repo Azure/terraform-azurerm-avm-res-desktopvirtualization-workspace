@@ -21,4 +21,3 @@ locals {
     "centralus",
   ]
 }
-
