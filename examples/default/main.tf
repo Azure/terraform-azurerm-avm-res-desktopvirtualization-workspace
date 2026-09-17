@@ -57,6 +57,7 @@ module "avm_res_desktopvirtualization_hostpool" {
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
+  enable_telemetry = false
 }
 
 /*
@@ -91,6 +92,7 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   virtual_desktop_application_group_name                = var.appgroupname
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_type                = var.type
+  enable_telemetry                                      = false
   virtual_desktop_application_group_friendly_name       = var.name
 }
 
@@ -107,7 +109,7 @@ module "workspace" {
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
-  enable_telemetry                        = var.enable_telemetry
+  enable_telemetry                        = false
   virtual_desktop_workspace_description   = var.description
   virtual_desktop_workspace_friendly_name = var.virtual_desktop_workspace_friendly_name
 }

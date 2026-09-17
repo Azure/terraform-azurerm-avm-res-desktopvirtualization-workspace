@@ -61,6 +61,7 @@ module "avm_res_desktopvirtualization_hostpool" {
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
+  enable_telemetry = false
 }
 
 /*
@@ -97,7 +98,7 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   virtual_desktop_application_group_name                = var.virtual_desktop_application_group_name
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_type                = var.virtual_desktop_application_group_type
-  enable_telemetry                                      = var.enable_telemetry
+  enable_telemetry                                      = false
 }
 
 # A vnet is required for the private endpoint.
@@ -140,7 +141,7 @@ module "workspace" {
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
-  enable_telemetry                        = var.enable_telemetry
+  enable_telemetry                        = false
   public_network_access_enabled           = false
   virtual_desktop_workspace_description   = var.description
   virtual_desktop_workspace_friendly_name = var.virtual_desktop_workspace_friendly_name
@@ -156,7 +157,7 @@ module "avm_res_network_privateendpoint" {
   private_connection_resource_id = module.workspace.resource.id
   resource_group_name            = azurerm_resource_group.this.name
   subnet_resource_id             = azurerm_subnet.this.id
-  enable_telemetry               = var.enable_telemetry # see variables.tf
+  enable_telemetry               = false # see variables.tf
   subresource_names              = ["feed"]
 }
 
