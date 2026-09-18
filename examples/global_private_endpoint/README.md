@@ -95,7 +95,7 @@ module "workspace" {
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
-  enable_telemetry                        = false
+  enable_telemetry                        = var.enable_telemetry
   public_network_access_enabled           = false
   virtual_desktop_workspace_description   = var.description
   virtual_desktop_workspace_friendly_name = var.virtual_desktop_workspace_friendly_name
@@ -111,7 +111,7 @@ module "avm_res_network_privateendpoint" {
   private_connection_resource_id = module.workspace.resource.id
   resource_group_name            = azurerm_resource_group.this.name
   subnet_resource_id             = azurerm_subnet.this.id
-  enable_telemetry               = false # see variables.tf
+  enable_telemetry               = var.enable_telemetry # see variables.tf
   subresource_names              = ["global"]
 }
 ```
@@ -164,7 +164,7 @@ If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
 
-Default: `true`
+Default: `false`
 
 ### <a name="input_virtual_desktop_workspace_friendly_name"></a> [virtual\_desktop\_workspace\_friendly\_name](#input\_virtual\_desktop\_workspace\_friendly\_name)
 
