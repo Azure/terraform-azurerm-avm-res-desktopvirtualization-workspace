@@ -92,13 +92,13 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   source  = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
   version = "0.2.1"
 
-  user_group_name                                       = var.user_group_name
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_location            = azurerm_resource_group.this.location
   virtual_desktop_application_group_name                = var.virtual_desktop_application_group_name
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_type                = var.virtual_desktop_application_group_type
   enable_telemetry                                      = var.enable_telemetry
+  user_group_name                                       = var.user_group_name
 }
 
 # A vnet is required for the private endpoint.

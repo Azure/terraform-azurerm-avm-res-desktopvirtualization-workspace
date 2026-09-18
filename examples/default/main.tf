@@ -86,7 +86,6 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   source  = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
   version = "0.2.1"
 
-  user_group_name                                       = var.user_group_name
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_location            = azurerm_resource_group.this.location
   virtual_desktop_application_group_name                = var.appgroupname
@@ -94,6 +93,7 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   virtual_desktop_application_group_type                = var.type
   enable_telemetry                                      = var.enable_telemetry
   virtual_desktop_application_group_friendly_name       = var.name
+  user_group_name                                       = var.user_group_name
 }
 
 # This is the module call
