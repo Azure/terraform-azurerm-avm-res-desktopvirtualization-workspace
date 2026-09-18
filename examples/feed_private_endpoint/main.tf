@@ -24,7 +24,7 @@ provider "azurerm" {
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
   source  = "Azure/naming/azurerm"
-  version = "0.3.0"
+  version = "0.4.3"
 }
 
 # This picks a random region from the list of regions.
@@ -47,7 +47,7 @@ resource "azurerm_log_analytics_workspace" "this" {
 
 module "avm_res_desktopvirtualization_hostpool" {
   source  = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version = "0.1.5"
+  version = "0.4.0"
 
   resource_group_name                           = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type  = "BreadthFirst"
@@ -90,15 +90,15 @@ resource "azurerm_role_assignment" "this" {
 # Create Azure Virtual Desktop application group
 module "avm_res_desktopvirtualization_applicationgroup" {
   source  = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
-  version = "0.1.3"
+  version = "0.2.1"
 
-  user_group_name                                       = var.user_group_name
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_location            = azurerm_resource_group.this.location
   virtual_desktop_application_group_name                = var.virtual_desktop_application_group_name
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_type                = var.virtual_desktop_application_group_type
   enable_telemetry                                      = var.enable_telemetry
+  user_group_name                                       = var.user_group_name
 }
 
 # A vnet is required for the private endpoint.
@@ -149,7 +149,7 @@ module "workspace" {
 
 module "avm_res_network_privateendpoint" {
   source  = "Azure/avm-res-network-privateendpoint/azurerm"
-  version = "0.1.0"
+  version = "0.2.0"
 
   location                       = azurerm_resource_group.this.location
   name                           = module.naming.private_endpoint.name_unique
