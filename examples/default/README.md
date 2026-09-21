@@ -183,7 +183,7 @@ If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
 
-Default: `false`
+Default: `true`
 
 ### <a name="input_host_pool"></a> [host\_pool](#input\_host\_pool)
 
