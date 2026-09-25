@@ -100,7 +100,7 @@ module "avm_res_desktopvirtualization_applicationgroup" {
 module "workspace" {
   source = "../../"
 
-  virtual_desktop_workspace_location            = azurerm_resource_group.this.location
+  location                                      = azurerm_resource_group.this.location
   virtual_desktop_workspace_name                = var.virtual_desktop_workspace_name
   virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
   diagnostic_settings = {
