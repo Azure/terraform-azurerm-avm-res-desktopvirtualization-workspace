@@ -21,7 +21,7 @@ resource "modtm_telemetry" "telemetry" {
 }
 
 locals {
-  main_location = "unknown"
+  main_location = var.location
 }
 
 data "azapi_client_config" "telemetry" {

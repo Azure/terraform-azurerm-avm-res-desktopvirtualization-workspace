@@ -38,7 +38,7 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_virtual_desktop_workspace_location"></a> [virtual\_desktop\_workspace\_location](#input\_virtual\_desktop\_workspace\_location)
+### <a name="input_location"></a> [location](#input\_location)
 
 Description: (Required) The location/region where the Virtual Desktop Workspace is located. Changing the location/region forces a new resource to be created.
 
