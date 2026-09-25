@@ -1,6 +1,6 @@
 # Create AVD workspace
 resource "azurerm_virtual_desktop_workspace" "this" {
-  location                      = var.virtual_desktop_workspace_location
+  location                      = var.location
   name                          = var.virtual_desktop_workspace_name
   resource_group_name           = var.virtual_desktop_workspace_resource_group_name
   description                   = var.virtual_desktop_workspace_description
