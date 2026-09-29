@@ -1,4 +1,4 @@
-variable "virtual_desktop_workspace_location" {
+variable "location" {
   type        = string
   description = "(Required) The location/region where the Virtual Desktop Workspace is located. Changing the location/region forces a new resource to be created."
   nullable    = false
