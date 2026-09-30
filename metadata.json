@@ -4,7 +4,6 @@
   "moduleDescription": "AVM Resource Module for Azure Virtual Desktop (AVD) Workspace",
   "canonicalType": "Microsoft.DesktopVirtualization/workspaces",
   "owners": [
-    "jensheerin",
     "sihbher"
   ],
   "telemetryIdPrefix": "46d3xtrf.res.5afca9e"
