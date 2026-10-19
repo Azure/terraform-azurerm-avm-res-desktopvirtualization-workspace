@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.71, < 5.0.0"
     }
+    modtm = {
+      source  = "registry.terraform.io/azure/modtm"
+      version = "~> 0.3"
+    }
     random = {
       source  = "hashicorp/random"
       version = ">= 3.6.0, <4.0.0"
@@ -31,8 +35,8 @@ provider "azurerm" {
 
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
-  source  = "Azure/naming/azurerm"
-  version = "0.3.0"
+  source  = "Azure/avm-utl-naming/azure"
+  version = "0.2.0"
 }
 
 # This picks a random region from the list of regions.
@@ -102,8 +106,9 @@ module "workspace" {
 }
 
 module "avm_res_network_privateendpoint" {
-  source  = "Azure/avm-res-network-privateendpoint/azurerm"
-  version = "0.1.0"
+  source    = "Azure/avm-res-network-privateendpoint/azurerm"
+  version   = "0.1.0"
+  providers = { modtm = modtm }
 
   location                       = azurerm_resource_group.this.location
   name                           = module.naming.private_endpoint.name_unique
@@ -124,6 +129,8 @@ The following requirements are needed by this module:
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0)
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71, < 5.0.0)
+
+- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.6.0, <4.0.0)
 
@@ -198,9 +205,9 @@ Version: 0.1.0
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
-Source: Azure/naming/azurerm
+Source: Azure/avm-utl-naming/azure
 
-Version: 0.3.0
+Version: 0.2.0
 
 ### <a name="module_workspace"></a> [workspace](#module\_workspace)
 
