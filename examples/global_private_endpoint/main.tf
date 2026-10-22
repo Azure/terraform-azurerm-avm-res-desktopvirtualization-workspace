@@ -6,6 +6,7 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.71, < 5.0.0"
     }
+    # tflint-ignore: terraform_unused_required_providers
     modtm = {
       source  = "registry.terraform.io/azure/modtm"
       version = "~> 0.3"
@@ -98,9 +99,8 @@ module "workspace" {
 }
 
 module "avm_res_network_privateendpoint" {
-  source    = "Azure/avm-res-network-privateendpoint/azurerm"
-  version   = "0.1.0"
-  providers = { modtm = modtm }
+  source  = "Azure/avm-res-network-privateendpoint/azurerm"
+  version = "0.1.0"
 
   location                       = azurerm_resource_group.this.location
   name                           = module.naming.private_endpoint.name_unique
