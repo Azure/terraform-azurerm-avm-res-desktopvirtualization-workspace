@@ -43,7 +43,7 @@ resource "azurerm_log_analytics_workspace" "this" {
 
 module "avm_res_desktopvirtualization_hostpool" {
   source  = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version = "0.1.5"
+  version = "0.5.0"
 
   resource_group_name                           = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type  = "BreadthFirst"
@@ -82,7 +82,7 @@ module "avm_res_desktopvirtualization_hostpool" {
 
 module "avm_res_desktopvirtualization_applicationgroup" {
   source  = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
-  version = "0.1.3"
+  version = "0.3.0"
 
   user_group_name                                       = var.user_group_name
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id

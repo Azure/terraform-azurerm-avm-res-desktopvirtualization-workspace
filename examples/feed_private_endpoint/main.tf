@@ -52,7 +52,7 @@ resource "azurerm_log_analytics_workspace" "this" {
 
 module "avm_res_desktopvirtualization_hostpool" {
   source  = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version = "0.1.5"
+  version = "0.5.0"
 
   resource_group_name                           = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type  = "BreadthFirst"
@@ -93,7 +93,7 @@ module "avm_res_desktopvirtualization_hostpool" {
 # Create Azure Virtual Desktop application group
 module "avm_res_desktopvirtualization_applicationgroup" {
   source  = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
-  version = "0.1.3"
+  version = "0.3.0"
 
   user_group_name                                       = var.user_group_name
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
@@ -152,7 +152,7 @@ module "workspace" {
 
 module "avm_res_network_privateendpoint" {
   source  = "Azure/avm-res-network-privateendpoint/azurerm"
-  version = "0.1.0"
+  version = "0.3.0"
 
   location                       = azurerm_resource_group.this.location
   name                           = module.naming.private_endpoint.name_unique

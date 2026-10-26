@@ -100,7 +100,7 @@ module "workspace" {
 
 module "avm_res_network_privateendpoint" {
   source  = "Azure/avm-res-network-privateendpoint/azurerm"
-  version = "0.1.0"
+  version = "0.3.0"
 
   location                       = azurerm_resource_group.this.location
   name                           = module.naming.private_endpoint.name_unique
