@@ -100,14 +100,14 @@ module "workspace" {
 
 module "avm_res_network_privateendpoint" {
   source  = "Azure/avm-res-network-privateendpoint/azurerm"
-  version = "0.1.0"
+  version = "0.3.0"
 
   location                       = azurerm_resource_group.this.location
   name                           = module.naming.private_endpoint.name_unique
   network_interface_name         = module.naming.network_interface.name_unique
   private_connection_resource_id = module.workspace.resource.id
-  resource_group_name            = azurerm_resource_group.this.name
   subnet_resource_id             = azurerm_subnet.this.id
   enable_telemetry               = var.enable_telemetry # see variables.tf
   subresource_names              = ["global"]
+  resource_group_name            = azurerm_resource_group.this.name
 }

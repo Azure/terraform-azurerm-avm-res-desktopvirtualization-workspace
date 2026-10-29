@@ -43,11 +43,11 @@ resource "azurerm_log_analytics_workspace" "this" {
 
 module "avm_res_desktopvirtualization_hostpool" {
   source  = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version = "0.1.5"
+  version = "0.5.0"
 
+  location                                      = var.location
   resource_group_name                           = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type  = "BreadthFirst"
-  virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
   virtual_desktop_host_pool_name                = var.host_pool
   virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                = "Pooled"
@@ -57,7 +57,8 @@ module "avm_res_desktopvirtualization_hostpool" {
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
-  enable_telemetry = var.enable_telemetry
+  enable_telemetry                   = var.enable_telemetry
+  virtual_desktop_host_pool_location = azurerm_resource_group.this.location
 }
 
 # Get an existing built-in role definition
@@ -82,16 +83,17 @@ module "avm_res_desktopvirtualization_hostpool" {
 
 module "avm_res_desktopvirtualization_applicationgroup" {
   source  = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
-  version = "0.1.3"
+  version = "0.3.0"
 
-  user_group_name                                       = var.user_group_name
+  location                                              = var.location
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
-  virtual_desktop_application_group_location            = azurerm_resource_group.this.location
   virtual_desktop_application_group_name                = var.appgroupname
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_application_group_type                = var.type
   enable_telemetry                                      = var.enable_telemetry
   virtual_desktop_application_group_friendly_name       = var.name
+  user_group_name                                       = var.user_group_name
+  virtual_desktop_application_group_location            = azurerm_resource_group.this.location
 }
 
 # This is the module call

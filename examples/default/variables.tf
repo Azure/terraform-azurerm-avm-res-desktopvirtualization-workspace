@@ -56,3 +56,10 @@ variable "virtual_desktop_workspace_name" {
   description = "(Required) The name of the Virtual Desktop Workspace. Changing this forces a new resource to be created."
   nullable    = false
 }
+
+variable "location" {
+  type        = string
+  default     = "eastus"
+  description = "The Azure region for this module's resources or telemetry deployment."
+  nullable    = false
+}
