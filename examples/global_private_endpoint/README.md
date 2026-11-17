@@ -14,11 +14,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.71, < 5.0.0"
     }
-    # tflint-ignore: terraform_unused_required_providers
-    modtm = {
-      source  = "registry.terraform.io/azure/modtm"
-      version = "~> 0.3"
-    }
     random = {
       source  = "hashicorp/random"
       version = ">= 3.6.0, <4.0.0"
@@ -37,7 +32,7 @@ provider "azurerm" {
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
   source  = "Azure/avm-utl-naming/azure"
-  version = "0.2.0"
+  version = "0.3.0"
 }
 
 # This picks a random region from the list of regions.
@@ -108,13 +103,13 @@ module "workspace" {
 
 module "avm_res_network_privateendpoint" {
   source  = "Azure/avm-res-network-privateendpoint/azurerm"
-  version = "0.1.0"
+  version = "0.3.1"
 
   location                       = azurerm_resource_group.this.location
   name                           = module.naming.private_endpoint.name_unique
   network_interface_name         = module.naming.network_interface.name_unique
+  parent_id                      = azurerm_resource_group.this.id
   private_connection_resource_id = module.workspace.resource.id
-  resource_group_name            = azurerm_resource_group.this.name
   subnet_resource_id             = azurerm_subnet.this.id
   enable_telemetry               = var.enable_telemetry # see variables.tf
   subresource_names              = ["global"]
@@ -129,8 +124,6 @@ The following requirements are needed by this module:
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0)
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71, < 5.0.0)
-
-- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.6.0, <4.0.0)
 
@@ -201,13 +194,13 @@ The following Modules are called:
 
 Source: Azure/avm-res-network-privateendpoint/azurerm
 
-Version: 0.1.0
+Version: 0.3.1
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
 Source: Azure/avm-utl-naming/azure
 
-Version: 0.2.0
+Version: 0.3.0
 
 ### <a name="module_workspace"></a> [workspace](#module\_workspace)
 

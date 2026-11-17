@@ -38,12 +38,6 @@ variable "type" {
   description = "The type of the application group"
 }
 
-variable "user_group_name" {
-  type        = string
-  default     = "avdusergroup"
-  description = "Microsoft Entra ID User Group for AVD users"
-}
-
 variable "virtual_desktop_workspace_friendly_name" {
   type        = string
   default     = "Workspace friendly name"
@@ -54,12 +48,5 @@ variable "virtual_desktop_workspace_name" {
   type        = string
   default     = "vdws-avd-001"
   description = "(Required) The name of the Virtual Desktop Workspace. Changing this forces a new resource to be created."
-  nullable    = false
-}
-
-variable "location" {
-  type        = string
-  default     = "eastus"
-  description = "The Azure region for this module's resources or telemetry deployment."
   nullable    = false
 }

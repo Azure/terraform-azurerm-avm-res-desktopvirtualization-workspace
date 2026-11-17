@@ -20,12 +20,6 @@ variable "host_pool" {
   description = "The name of the AVD Host Pool to assign the application group to."
 }
 
-variable "user_group_name" {
-  type        = string
-  default     = "avdusersgrp"
-  description = "Microsoft Entra ID User Group for AVD users"
-}
-
 variable "virtual_desktop_application_group_name" {
   type        = string
   default     = "vdag-avd-001"
@@ -48,12 +42,5 @@ variable "virtual_desktop_workspace_name" {
   type        = string
   default     = "vdws-avd-001"
   description = "(Required) The name of the Virtual Desktop Workspace. Changing this forces a new resource to be created."
-  nullable    = false
-}
-
-variable "location" {
-  type        = string
-  default     = "eastus"
-  description = "The Azure region for this module's resources or telemetry deployment."
   nullable    = false
 }
