@@ -38,12 +38,6 @@ variable "type" {
   description = "The type of the application group"
 }
 
-variable "user_group_name" {
-  type        = string
-  default     = "avdusergroup"
-  description = "Microsoft Entra ID User Group for AVD users"
-}
-
 variable "virtual_desktop_workspace_friendly_name" {
   type        = string
   default     = "Workspace friendly name"

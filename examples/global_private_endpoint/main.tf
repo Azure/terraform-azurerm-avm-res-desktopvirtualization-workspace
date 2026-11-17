@@ -6,11 +6,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.71, < 5.0.0"
     }
-    # tflint-ignore: terraform_unused_required_providers
-    modtm = {
-      source  = "registry.terraform.io/azure/modtm"
-      version = "~> 0.3"
-    }
     random = {
       source  = "hashicorp/random"
       version = ">= 3.6.0, <4.0.0"
@@ -29,7 +24,7 @@ provider "azurerm" {
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
   source  = "Azure/avm-utl-naming/azure"
-  version = "0.2.0"
+  version = "0.3.0"
 }
 
 # This picks a random region from the list of regions.
@@ -100,13 +95,13 @@ module "workspace" {
 
 module "avm_res_network_privateendpoint" {
   source  = "Azure/avm-res-network-privateendpoint/azurerm"
-  version = "0.1.0"
+  version = "0.3.1"
 
   location                       = azurerm_resource_group.this.location
   name                           = module.naming.private_endpoint.name_unique
   network_interface_name         = module.naming.network_interface.name_unique
+  parent_id                      = azurerm_resource_group.this.id
   private_connection_resource_id = module.workspace.resource.id
-  resource_group_name            = azurerm_resource_group.this.name
   subnet_resource_id             = azurerm_subnet.this.id
   enable_telemetry               = var.enable_telemetry # see variables.tf
   subresource_names              = ["global"]
